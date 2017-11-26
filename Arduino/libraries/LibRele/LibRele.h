@@ -13,9 +13,13 @@ class  LibRele{
 		void openRele();
 		void closeRele();
 		
+		bool isOpen();
+		bool isClosed();
+		
 	private:
 		
 		int iPin;
+		bool estaAbierto;
 };
 
 #endif

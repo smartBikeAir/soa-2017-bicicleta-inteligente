@@ -11,13 +11,24 @@
 LibRele::LibRele(int iPin){
 
 	this->iPin = iPin;
+	estaAbierto = true;
 	pinMode(iPin, OUTPUT);
 }
 
 void LibRele::openRele(){
+	estaAbierto = true;
     digitalWrite(this->iPin, LOW);
 }
 
 void LibRele::closeRele(){
+	estaAbierto = false;
     digitalWrite(this->iPin, HIGH);
+}
+
+bool LibRele::isOpen() {
+	return estaAbierto;
+}
+
+bool LibRele::isClosed() {
+	return !estaAbierto;
 }

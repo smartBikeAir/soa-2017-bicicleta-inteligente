@@ -40,8 +40,15 @@
 
 // Variables/constantes necesarias para la transición automática de estado: traveling -> standBy.
 #define MIN_TIME_FOR_CHANGE_TO_STAND_BY 60000 //300000 // 5 minutos.
+
+// Tiempo minimo que debe transcurrir para contabilizar un cambio de estado de las luces del chasis
+#define MIN_TIME_FOR_SWITCH_CHASSIS_LIGHTS 100 //Aprox ~5 seg
+
 boolean shouldSetTimestamp = true;
 unsigned long velocityZeroTimestamp;
+
+int detectedLightTimeCounter = 0;
+int noLightTimeCounter = 0;
 
 #define END_CMD_CHAR '#'
 SoftwareSerial BT1(BLUETOOTH_RX, BLUETOOTH_TX);
@@ -173,7 +180,6 @@ void execStandBy() {
 }
 
 void execTraveling() {
-
     // Funcionalidad objeto cercano.
     if (nearObjectON == true) {
         long distanceToObject = ultrasonicSensor.checkDistance();        
@@ -190,10 +196,21 @@ void execTraveling() {
 
     // Funcionalidad encendido automático de luces del chasis (LDR y Rele + leds).
     if (automaticLightON == true) {
-        if (ldr.hayLuz() == true) { // Si hay luz ambiente/natural.
-           rele.openRele(); // Apago luz.
-        } else {
-            rele.closeRele(); // Enciendo luz.
+        if (ldr.hayLuz() && rele.isClosed()) { // Si hay luz ambiente/natural.
+           detectedLightTimeCounter++;
+        }
+
+        if(!ldr.hayLuz() && rele.isOpen()){
+          noLightTimeCounter++;
+        }
+        
+        if(rele.isClosed() && detectedLightTimeCounter > MIN_TIME_FOR_SWITCH_CHASSIS_LIGHTS) {
+          detectedLightTimeCounter = 0;
+          rele.openRele(); // Apago luz.
+        }
+        if(rele.isOpen() && noLightTimeCounter > MIN_TIME_FOR_SWITCH_CHASSIS_LIGHTS) {
+          noLightTimeCounter = 0;
+          rele.closeRele(); // Enciendo luz.
         }
     } else {
          rele.openRele(); // Apago luz.
