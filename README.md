@@ -1,6 +1,6 @@
 # Bicicleta inteligente
 ## Comisión
-Lunes noche
+Lunes noche, 2do cuatrimestre 2017
 
 ## Integrantes
 
