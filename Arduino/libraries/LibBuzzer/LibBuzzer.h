@@ -20,9 +20,13 @@ class LibBuzzer{
 		void activarBuzzer(int Value);
 		void desactivarBuzzer();
 		
+		void sonarAlarmaAlternada();
+		
 	private:
 		
 		int iPBuzzer;
+		int cycleCounter;	// se utilizar para trabajar duraciones de tiempo en las frecuencias
+		int frequency;
 
 		//Nos Permite controlar el sonido de Alarma.
 		unsigned long ulBuzzerSonar;

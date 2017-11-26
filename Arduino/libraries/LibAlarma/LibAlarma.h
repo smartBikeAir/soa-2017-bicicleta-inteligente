@@ -20,6 +20,8 @@ class LibAlarma {
 	int  activarAlarmaSonando();	
 	int  desactivarAlarmaSonando();
 	
+	void sonarAlarmaAlternada();
+	
   private:
 
     // Pin asignado a cada elemento de la alarma

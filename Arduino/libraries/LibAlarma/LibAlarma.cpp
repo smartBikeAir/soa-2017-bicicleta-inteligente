@@ -39,3 +39,6 @@ int  LibAlarma::desactivarAlarmaSonando(){
 		Buzzer->desactivarBuzzer();
 }	
 	
+void LibAlarma::sonarAlarmaAlternada() {
+	Buzzer->sonarAlarmaAlternada();
+}

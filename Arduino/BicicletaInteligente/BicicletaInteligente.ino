@@ -281,6 +281,7 @@ void execAlarmIsRinging() {
         systemState = standBy;
         Serial.println("----- PASAMOS A MODO REPOSO -----");
     }
+    alarm->sonarAlarmaAlternada();
 }
 
 // Bluetooth
