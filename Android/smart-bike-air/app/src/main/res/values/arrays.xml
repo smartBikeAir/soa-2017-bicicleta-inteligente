@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string-array  name="list_valores_distancia">
+        <item>En Millas</item>
+        <item>En Kilometros</item>
+    </string-array >
+
+    <string-array name="pref_nivel_valores">
+        <item>Mil</item>
+        <item>Kms</item>
+    </string-array>
+
+
+    <string-array name="list_valores_tiempo">
+       <item>En Segundos</item>
+       <item>En Minutos</item>
+    </string-array >
+
+    <string-array name="pref_nivel_valores_tiempo" >
+        <item>Seg</item>
+        <item>Min</item>
+    </string-array >
+
+</resources>
