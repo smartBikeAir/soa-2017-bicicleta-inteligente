@@ -52,7 +52,6 @@ public class HomeActivity extends AppCompatActivity implements SensorManagerRece
                                 if(strIncom.equals("1")) {
 
                                     // Envío un Mensaje a la Arduino
-                                    connectedThread.write("Start Trip OK..\n");
                                     Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
                                     startActivity(intent);
                                 }
@@ -60,7 +59,7 @@ public class HomeActivity extends AppCompatActivity implements SensorManagerRece
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
                                 Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
                                 // Envío un Mensaje a la Arduino
-                                connectedThread.write("Hello SBA-2017 BLUETOOTH. SOA-2017...\n");
+                                connectedThread.write("ok\n");
 
 
                             }

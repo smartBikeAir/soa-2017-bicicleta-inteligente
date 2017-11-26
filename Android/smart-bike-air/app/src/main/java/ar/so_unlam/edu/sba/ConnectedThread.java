@@ -22,7 +22,7 @@ public class ConnectedThread extends Thread {
     private Handler handler;
 
     private AtomicInteger atomicInteger;
-    private static final Integer MAX_READERS = 5;
+    private static final Integer MAX_READERS = 10;
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
 
     public ConnectedThread(BluetoothSocket socket) {
@@ -79,10 +79,12 @@ public class ConnectedThread extends Thread {
 
     /* Call this from the main activity to send data to the remote device */
     public void write(String message) {
+
         Log.d(TAG, "...Data to send: " + message + "...");
         byte[] msgBuffer = message.getBytes();
         try {
             outputStream.write(msgBuffer);
+            atomicInteger.decrementAndGet();
         } catch (IOException e) {
             Log.d(TAG, "...Error data send: " + e.getMessage() + "...");
         }

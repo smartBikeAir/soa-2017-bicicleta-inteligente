@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
 
-
 public class RealTimeActivity extends AppCompatActivity  implements SensorEventListener {
 
     private Chronometer chronometer;
@@ -33,7 +32,6 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     private TextView velocimeterTextView;
     private Sensor gyroscope;
     private TextView objetocercano;
-
 
     private SensorManager sensorManager;
 
@@ -54,14 +52,20 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
                             strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
                             if (!strIncom.isEmpty()) {
 
+
                                 if(strIncom.equals("2")) {
 
                                     objetocercano.setTextColor(getApplication().getResources().getColor(R.color.alerta));
                                     objetocercano.setText("ALERTA !! OBJETO CERCANO!!!!");
                                 }
 
+
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
                                 Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
+                                // Envío un Mensaje a la Arduino
+                                connectedThread.write("ok\n");
+
+
                             }
                         }
                 }
@@ -73,7 +77,6 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         };
     };
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +85,8 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         // Chronometer
         chronometer = (Chronometer)findViewById(R.id.chronometer);
         chronometer.start();
+
+        objetocercano = (TextView)findViewById(R.id.objetocercano);
 
         // User location
         geolocationButton = (Button)findViewById(R.id.geolocationButton);
@@ -105,7 +110,6 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         });
 
         velocimeterTextView = (TextView)findViewById(R.id.velocimeterTextView);
-        objetocercano = (TextView)findViewById(R.id.objetocercano);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -139,7 +143,6 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
     protected void onResume() {
         super.onResume();
-
         connectedThread.setHandler(handler);
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 
