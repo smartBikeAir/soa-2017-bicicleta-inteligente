@@ -32,7 +32,6 @@ public class FragmentConfiguracion extends PreferenceFragment implements SharedP
         // Si  no tenemos coneccion
         preferenceManager.findPreference(KEY_PREF_PROXIMIDAD).setEnabled(false);
         // si tenemos coneccion
-        preferenceManager.findPreference(KEY_PREF_ALARMA).setEnabled(true);
 
     }
 

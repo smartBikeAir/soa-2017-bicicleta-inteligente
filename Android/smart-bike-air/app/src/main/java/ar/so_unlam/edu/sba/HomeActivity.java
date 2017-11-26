@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity implements SensorManagerRece
 
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
 
-   private ConnectedThread connectedThread = ((ConnectedThread)APP_SERVICE.getConnectedThread());
+    private ConnectedThread connectedThread = ((ConnectedThread)APP_SERVICE.getConnectedThread());
 
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -48,14 +48,21 @@ public class HomeActivity extends AppCompatActivity implements SensorManagerRece
                         for (int i = 0; i < arrayMsg.length; i++) {
                             strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
                             if (!strIncom.isEmpty()) {
-                                // update View
-                                //updateMsgOfExternalBoard(strIncom.charAt(0));
-                                //txtArduino.setText("Data from Arduino: " + getDeviceMessage(strIncom.charAt(0)));
+
+                                if(strIncom.equals("1")) {
+
+                                    // Envío un Mensaje a la Arduino
+                                    connectedThread.write("Start Trip OK..\n");
+                                    Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
+                                    startActivity(intent);
+                                }
+
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
                                 Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
-
                                 // Envío un Mensaje a la Arduino
                                 connectedThread.write("Hello SBA-2017 BLUETOOTH. SOA-2017...\n");
+
+
                             }
                         }
                 }
@@ -111,7 +118,20 @@ public class HomeActivity extends AppCompatActivity implements SensorManagerRece
         alarmaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                connectedThread.write("*10#");
+
+                if(alarmaButton.getText()=="DEACTIVATED"){
+                    connectedThread.write("3#");
+                    alarmaButton.setText("Active");
+                    alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorAccent));
+                }else{
+
+                    connectedThread.write("4#");
+                    alarmaButton.setText("DEACTIVATED");
+                    alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+
+                }
+
+
             }
         });
 

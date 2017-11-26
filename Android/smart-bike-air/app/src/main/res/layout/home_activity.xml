@@ -14,13 +14,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/primary_light"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/primary_light"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,41 +37,41 @@
                 android:textColor="@color/primary_text"
                 android:text="Start"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="15dp">
-
-
-            <Button
-                android:id="@+id/myTripsButton"
-                style="@style/Widget.AppCompat.Button.Borderless"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_next_week_android"
-                android:text="MyTrips"
-                android:textColor="@color/primary_text" />
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="15dp">
 
-            <Button
-                android:id="@+id/settingsButton"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_settings_android"
-                android:text="Settings"
-                android:textColor="@color/primary_text" />
 
-            <Button
-                android:id="@+id/buttonConnect"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/primary_text"
-                android:drawableTop="@drawable/ic_settings_bluetooth_black_48dp"
-                android:text="Connect"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
-        </LinearLayout>
+                <Button
+                    android:id="@+id/alarmaButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/alarma_apagada"
+                    android:text="deactivated"
+                    android:textColor="@color/primary_text" />
+
+                <Button
+                    android:id="@+id/settingsButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_settings_android"
+                    android:text="Settings"
+                    android:textColor="@color/primary_text" />
+
+                <Button
+                    android:id="@+id/buttonConnect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_text"
+                    android:drawableTop="@drawable/ic_settings_bluetooth_black_48dp"
+                    android:text="Connect"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+            </LinearLayout>
 
         </LinearLayout>
     </FrameLayout>

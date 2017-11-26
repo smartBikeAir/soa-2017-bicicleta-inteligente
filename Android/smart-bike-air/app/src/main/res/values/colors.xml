@@ -8,4 +8,5 @@
     <color name="secondary_text">#757575</color>
     <color name="icons">#00e676</color>
     <color name="divider">#BDBDBD</color>
+    <color name="alerta">#ff1744</color>
 </resources>

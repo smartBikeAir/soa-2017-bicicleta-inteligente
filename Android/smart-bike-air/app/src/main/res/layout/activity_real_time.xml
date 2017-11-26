@@ -84,14 +84,15 @@
         android:layout_weight="1">
 
         <TextView
+            android:id="@+id/objetocercano"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/real_time_near_object"
             android:textSize="24sp"
             android:layout_gravity="center"
             android:layout_weight="5"
             android:textColor="@android:color/holo_green_dark"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            android:enabled="false"/>
 
         <Button
             android:id="@+id/geolocationButton"

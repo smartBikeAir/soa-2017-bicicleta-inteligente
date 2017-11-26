@@ -28,7 +28,7 @@ public class ConnectedThread extends Thread {
     public ConnectedThread(BluetoothSocket socket) {
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
-
+        handler = new Handler();
         // Get the input and output streams, using temp objects because
         // member streams are final
         try {

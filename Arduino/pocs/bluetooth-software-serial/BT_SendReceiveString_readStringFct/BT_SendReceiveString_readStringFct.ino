@@ -53,15 +53,15 @@ void loop() {
   // Si tengo datos en el bluetooth, available me devuelve un size.
   if (BT1.available() > 0) {
    
-    /*message = BT1.readString();
+    message = BT1.readString();
     Serial.print("size: ");
     Serial.println(message.length());
     Serial.println(message);
-    digitalWrite(LED_PIN_13, HIGH);*/
+    digitalWrite(LED_PIN_13, HIGH);
 
-    message2 = get_cod_Message();
+   /* message2 = get_cod_Message();
     Serial.print(message2);
-     Serial.print('\n');
+     Serial.print('\n');*/
   }
 
   // Si tengo datos en el Serial Monitor, available me devuelve un size.

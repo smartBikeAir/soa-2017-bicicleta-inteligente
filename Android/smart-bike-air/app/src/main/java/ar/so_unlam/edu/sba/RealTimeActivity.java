@@ -9,6 +9,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,6 +20,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
+
 
 public class RealTimeActivity extends AppCompatActivity  implements SensorEventListener {
 
@@ -27,8 +32,47 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     private Button endTripButton;
     private TextView velocimeterTextView;
     private Sensor gyroscope;
+    private TextView objetocercano;
+
 
     private SensorManager sensorManager;
+
+    private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
+
+    private ConnectedThread connectedThread = ((ConnectedThread)APP_SERVICE.getConnectedThread());
+
+    private Handler handler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            String[] arrayMsg;
+            String strIncom = "";
+            try {
+                switch (msg.what) {
+                    case RECIEVE_MESSAGE: // if receive massage
+                        byte[] readBuf = (byte[]) msg.obj;
+                        arrayMsg = new String(readBuf, 0, msg.arg1).split("\r\n"); // create string from bytes array, and split msgs
+                        for (int i = 0; i < arrayMsg.length; i++) {
+                            strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
+                            if (!strIncom.isEmpty()) {
+
+                                if(strIncom.equals("2")) {
+
+                                    objetocercano.setTextColor(getApplication().getResources().getColor(R.color.alerta));
+                                    objetocercano.setText("ALERTA !! OBJETO CERCANO!!!!");
+                                }
+
+                                Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
+                                Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                }
+            } catch (Exception e) {
+                String msj = "In handleMessage(), fail process info: " + e.getMessage() + "." + strIncom;
+                Toast.makeText(getBaseContext(), "Fatal Error" + " - " + msj, Toast.LENGTH_LONG).show();
+                finish();
+            }
+        };
+    };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +105,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         });
 
         velocimeterTextView = (TextView)findViewById(R.id.velocimeterTextView);
+        objetocercano = (TextView)findViewById(R.id.objetocercano);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -94,6 +139,8 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
     protected void onResume() {
         super.onResume();
+
+        connectedThread.setHandler(handler);
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 
     }
