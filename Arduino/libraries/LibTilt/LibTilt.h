@@ -7,7 +7,7 @@
   #include "WProgram.h"
 #endif
 
-#define VALUE_TILT   100
+#define VALUE_TILT   300
 
 class LibTilt {
   public:

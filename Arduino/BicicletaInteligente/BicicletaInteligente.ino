@@ -155,7 +155,6 @@ void execStandBy() {
 
     combinacion resultado = llaveTresEstados.leerCombinacion();
     unsigned long vel = Velocidad.medirVelocidad();
-   // Serial.println(vel);
     if (receivedMessage == activateAlarm) {
         systemState = activatedAlarm;
         Serial.println("PASAMOS A MODO ALARMA ACTIVADA!!!!!!!!!!!!!!!!!!!!!!");
@@ -176,8 +175,8 @@ void execStandBy() {
 void execTraveling() {
 
     // Funcionalidad objeto cercano.
-    if (nearObjectEnabled == true) {
-        long distanceToObject = ultrasonicSensor.checkDistance();
+    if (nearObjectON == true) {
+        long distanceToObject = ultrasonicSensor.checkDistance();        
         boolean nearObjectAlert = distanceToObject != UNDEFINED_DISTANCE && distanceToObject < MIN_DISTANCE_TO_OBJECT;
         if (nearObjectAlert == true) {
             alarm->activarAlarmaSonando(); // Utilizamos la alarma para avisar al usuario que tiene un objeto cercano.
@@ -215,8 +214,7 @@ void execTraveling() {
     // cambiamos el estado del sistema.
     if (receivedMessage == endedTrip) {
 
-        // Al irme del estado traveling, tengo que apagar las luces 
-        // asociadas al viaje.
+        // Al irme del estado traveling, tengo que apagar los actuadores asociados.
         rele.openRele(); // Apago luz del chasis.
         Buzzer.desactivarBuzzer(); // Por si está sonando por objeto cercano.
         luzDeGiro.apagarLuces();// Apagar luces de giro (por si alguna justo quedó encendida)
@@ -235,8 +233,8 @@ void execTraveling() {
             velocityZeroTimestamp = millis();
         } else if ((millis() - velocityZeroTimestamp) > MIN_TIME_FOR_CHANGE_TO_STAND_BY) {
             sendMessage(endedTrip);
-            // Al irme del estado traveling, tengo que apagar las luces 
-            // asociadas al viaje.
+            
+            // Al irme del estado traveling, tengo que apagar los actuadores asociados.
             rele.openRele(); // Apago luz del chasis.
             Buzzer.desactivarBuzzer(); // Por si está sonando por objeto cercano.
             luzDeGiro.apagarLuces();// Apagar luces de giro (por si alguna justo quedó encendida)
@@ -250,13 +248,13 @@ void execTraveling() {
 void execActivatedAlarm() {
 
     combinacion resultado = llaveTresEstados.leerCombinacion();
-    if (tilt.isTilted() == true || Velocidad.medirVelocidad() > MIN_VELOCITY_FOR_CHANGE_TO_ALARM_IS_RINGING_STATE) {
+    unsigned long vel = Velocidad.medirVelocidad();
+    if (tilt.isTilted() == true || vel > MIN_VELOCITY_FOR_CHANGE_TO_ALARM_IS_RINGING_STATE) {
         // Hacemos sonar la alarma.
-        alarm->activarAlarmaSonando();
         rele.closeRele(); // Enciendo luz del chasis.
         systemState = alarmIsRinging;
         Serial.println("----- PASAMOS A MODO ALARMA SONANDO -----");
-    } else if (resultado == ddii) { // Si se hizo la combinación que desactiva la alarma.
+    } else if (resultado == ii) { // Si se hizo la combinación que desactiva la alarma.
         sendMessage(deactivateAlarm);
         systemState = standBy;
         Serial.println("----- PASAMOS A MODO REPOSO -----");
@@ -268,20 +266,20 @@ void execActivatedAlarm() {
 
 void execAlarmIsRinging() {
 
+    alarm->sonarAlarmaAlternada();
     combinacion resultado = llaveTresEstados.leerCombinacion();
     if (receivedMessage == turnAlarmOff) {
         alarm->desactivarAlarmaSonando();
         rele.openRele(); // Apago luz del chasis.
         systemState = standBy;
         Serial.println("----- PASAMOS A MODO REPOSO -----");
-    } else if (resultado == ddii) { // Si se hizo la combinación que apaga la alarma.
+    } else if (resultado == ii) { // Si se hizo la combinación que apaga la alarma.
         alarm->desactivarAlarmaSonando();
         rele.openRele(); // Apago luz del chasis.
         sendMessage(turnAlarmOff);
         systemState = standBy;
         Serial.println("----- PASAMOS A MODO REPOSO -----");
     }
-    alarm->sonarAlarmaAlternada();
 }
 
 // Bluetooth

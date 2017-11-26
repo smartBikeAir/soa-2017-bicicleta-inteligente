@@ -140,7 +140,7 @@ else {
 
     // DESARMAR ALARMA
     digitalWrite(ledAlarma, LOW); //solo para visualizar un cambio
-    return ddii;
+    return ii;
   }
   else {
     // Resetear combinación
@@ -151,7 +151,7 @@ else {
 
 ////// Analisis de combinación - Fin ///////////////
 
-        /* Serial.print("Marca de tiempo: ");
+         Serial.print("Marca de tiempo: ");
          Serial.println(millis());
          Serial.print("pulsador Izquierda: ");
          Serial.println(digitalRead(this->pinIzq));
@@ -164,7 +164,7 @@ else {
          Serial.print("Inicio derecha: ");
          Serial.println(INICIO_DERECHA);
          Serial.print("Inicio parcial lado izquierda: ");
-         Serial.println(INICIO_PI);*/
+         Serial.println(INICIO_PI);
 
     return ninguna;
 }

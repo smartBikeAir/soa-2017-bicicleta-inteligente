@@ -10,7 +10,7 @@ enum estadoActual {
 enum combinacion {
   ninguna,
   ddd, // derecha - derecha - derecha
-  ddii // derecha - derecha - izquierda - izquierda
+  ii // izquierda - izquierda
 };
 
 class LibLlaveTresEstados {

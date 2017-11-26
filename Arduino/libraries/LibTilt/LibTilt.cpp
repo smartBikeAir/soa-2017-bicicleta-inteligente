@@ -21,6 +21,12 @@ bool LibTilt::isTilted() {
           value--;
        }
     }
-    //Serial.println(value);
-    return value > VALUE_TILT;
+    Serial.println(value);
+
+    if (value > VALUE_TILT) {
+      value = 0;
+      return true;
+    } else {
+      return false;
+    }
 }
