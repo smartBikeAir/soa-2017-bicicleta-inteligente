@@ -1,4 +1,7 @@
 # Bicicleta inteligente
+## Comisión
+Lunes noche
+
 ## Integrantes
 
 | |Apellido|Nombre|DNI|
