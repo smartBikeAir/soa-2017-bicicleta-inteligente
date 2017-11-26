@@ -46,9 +46,9 @@ void setup() {
   Serial.println("------ MODULE HC-05 AVAILABLE ------");
   digitalWrite(BT_VCC, HIGH);    // Enciende el modulo     
   BT1.begin(9600);  
-  
+
 }
- 
+  int estadoMSJ = 0; 
 void loop() {
   // Si tengo datos en el bluetooth, available me devuelve un size.
   if (BT1.available() > 0) {
@@ -71,6 +71,10 @@ void loop() {
     BT1.print(message);
     BT1.print('\n');
     digitalWrite(LED_PIN_13, LOW);
+
+    if(BT1.overflow()){
+      Serial.println("Desbordamiento");  
+    }
   }
  
 }
