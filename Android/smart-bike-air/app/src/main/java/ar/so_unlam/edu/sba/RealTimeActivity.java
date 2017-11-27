@@ -21,8 +21,7 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Spliterator;
+import java.util.Calendar;
 import java.util.StringTokenizer;
 
 import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
@@ -36,13 +35,10 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     private Sensor gyroscope;
     private Sensor proximity;
     private TextView objetocercano;
-
     private SensorManager sensorManager;
-
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
-
     private ConnectedThread connectedThread = ((ConnectedThread)APP_SERVICE.getConnectedThread());
-
+    private long proximitySensorTimestamp = 0;
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             String[] arrayMsg;
@@ -178,25 +174,39 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
             float z = sensorEvent.values[2];
 
             if(y > 7 || z > 7){
-
                 Log.d("RealTimeActivity", "GYROSCOPE: Lanzo Dialogo");
                 lanzarDialogoEmergencia();
-
             }
         }
 
-        if(sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY){
+        if(sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
 
             float x = sensorEvent.values[0];
+
             /*
                 El sensor de proximidad normalmente tiene a su valor x como el valor más
                 alto posible (maximum range). Si en algún momento su valor es menor, significa
                 que tenemos un objeto cercano.
              */
-            if (x < proximity.getMaximumRange()) {
+            long differenceBetweenDates = Calendar.getInstance().getTime().getTime() - proximitySensorTimestamp;
+            if (x < proximity.getMaximumRange() && differenceBetweenDates > 1500) {
+
+                // Guardamos marca de tiempo asociada a la última vez que el sensor
+                // detectó objeto cercano.
+                proximitySensorTimestamp = Calendar.getInstance().getTime().getTime();
+
                 Intent intent = new Intent(RealTimeActivity.this, MapsActivity.class);
-                startActivity(intent);
+                intent.putExtra("proximity_timestamp", proximitySensorTimestamp);
+                startActivityForResult(intent, 1);
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            proximitySensorTimestamp = data.getLongExtra("proximity_timestamp", 0);
         }
     }
 
