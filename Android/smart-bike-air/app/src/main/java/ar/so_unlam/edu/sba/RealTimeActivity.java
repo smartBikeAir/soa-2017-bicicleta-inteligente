@@ -32,6 +32,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     private Button geolocationButton;
     private Button endTripButton;
     private TextView velocimeterTextView;
+    private TextView distanceTextView;
     private Sensor gyroscope;
     private Sensor proximity;
     private TextView objetocercano;
@@ -39,6 +40,8 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
     private ConnectedThread connectedThread = ((ConnectedThread)APP_SERVICE.getConnectedThread());
     private long proximitySensorTimestamp = 0;
+    private int velocityAvg = 0; // m/s
+    private int velocityCount = 0;
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             String[] arrayMsg;
@@ -90,11 +93,28 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_real_time);
 
+        distanceTextView = (TextView)findViewById(R.id.distance);
+
         // Chronometer
         chronometer = (Chronometer)findViewById(R.id.chronometer);
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+
+                long elapsedSeconds = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
+
+                // distance en m
+                // velocityAvg en m/s
+                // elapsedSeconds en s
+                int distance = (int) (velocityAvg * elapsedSeconds);
+                distanceTextView.setText(distance + " m");
+            }
+        });
         chronometer.start();
 
         objetocercano = (TextView)findViewById(R.id.objetocercano);
+
 
         // User location
         geolocationButton = (Button)findViewById(R.id.geolocationButton);
@@ -140,6 +160,12 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         public void onReceive(Context context, Intent intent) {
             String velocity = intent.getStringExtra("velocity");
             velocimeterTextView.setText(velocity + " km/h");
+            velocityCount++;
+
+            // Necesito a la velocidad en m/s.
+            int velocityInMs = (Integer.getInteger(velocity) * 1000) / 3600;
+
+            velocityAvg = (velocityAvg + velocityInMs) / velocityCount;
         }
     };
 
