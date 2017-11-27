@@ -56,31 +56,31 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
                         for (int i = 0; i < arrayMsg.length; i++) {
 
-                            strIncom = st.nextToken();
-                            if (!strIncom.isEmpty()) {
+                        strIncom = st.nextToken();
+                        if (!strIncom.isEmpty()) {
 
 
-                                if(strIncom.equals(AppConstants.nearObject)) {
+                            if (strIncom.equals(AppConstants.nearObject)) {
 
-                                    objetocercano.setTextColor(getApplication().getResources().getColor(R.color.alerta));
-                                    objetocercano.setText("ALERTA !! OBJETO CERCANO!!!!");
-                                }
-                                if(strIncom.equals(AppConstants.velocity)) {
+                                Toast.makeText(getBaseContext(), "OBJETO CERCANO !!!!!", Toast.LENGTH_LONG).show();
+                            }
+                            if (strIncom.equals(AppConstants.velocity)) {
 
-                                        Intent intent = new Intent("new-velocity-event");
-                                        intent.putExtra("velocity", st.nextToken() ); // value en km/h
-                                        LocalBroadcastManager.getInstance(RealTimeActivity.this).sendBroadcast(intent);
-
-                                }
-                                Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
-                                Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
-                                // Envío un Mensaje a la Arduino
-                                connectedThread.write("ok\n");
-
+                                Intent intent = new Intent("new-velocity-event");
+                                intent.putExtra("velocity", st.nextToken()); // value en km/h
+                                LocalBroadcastManager.getInstance(RealTimeActivity.this).sendBroadcast(intent);
 
                             }
+                            Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
+                            Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
+                            // Envío un Mensaje a la Arduino
+                            connectedThread.write("ok\n");
+
+
                         }
+                    }
                 }
+
             } catch (Exception e) {
                 String msj = "In handleMessage(), fail process info: " + e.getMessage() + "." + strIncom;
                 Toast.makeText(getBaseContext(), "Fatal Error" + " - " + msj, Toast.LENGTH_LONG).show();
