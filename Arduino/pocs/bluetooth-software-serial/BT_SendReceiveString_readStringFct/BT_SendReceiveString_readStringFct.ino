@@ -66,15 +66,12 @@ void loop() {
 
   // Si tengo datos en el Serial Monitor, available me devuelve un size.
   if (Serial.available() > 0) {
+    
     message = Serial.readStringUntil('\n');
     Serial.println("SENT ---> " + message);
     BT1.print(message);
     BT1.print('\n');
     digitalWrite(LED_PIN_13, LOW);
-
-    if(BT1.overflow()){
-      Serial.println("Desbordamiento");  
-    }
   }
  
 }

@@ -23,14 +23,13 @@ import ar.so_unlam.edu.local_sensors.SensorManagerService;
 
 import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
 
-public class HomeActivity extends AppCompatActivity implements SensorManagerReceiver.Receiver {
+public class HomeActivity extends AppCompatActivity{
 
     private Button startTripButton;
     private Button alarmaButton;
     private Button settingsButton;
     private Button buttonConnect;
 
-    private SensorManagerReceiver receiver;
 
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
 
@@ -49,7 +48,7 @@ public class HomeActivity extends AppCompatActivity implements SensorManagerRece
                             strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
                             if (!strIncom.isEmpty()) {
 
-                                if(strIncom.equals("1")) {
+                                if(strIncom.equals(AppConstants.startedTrip)) {
 
                                     // Envío un Mensaje a la Arduino
                                     Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
@@ -140,18 +139,6 @@ public class HomeActivity extends AppCompatActivity implements SensorManagerRece
     protected void onResume() {
         super.onResume();
         connectedThread.setHandler(handler);
-
-        // Inicia el servicio del Control de los sensores
-        // Se podría utilizar bindService, por si ya se encuentra en ejecución.
-        try {
-            receiver = new SensorManagerReceiver(new Handler());
-            receiver.setReceiver(this);
-            Intent sensorMngIntent = new Intent(Intent.ACTION_SYNC, null, this, SensorManagerService.class);
-            sensorMngIntent.putExtra("receiver", receiver);
-            startService(sensorMngIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -159,26 +146,4 @@ public class HomeActivity extends AppCompatActivity implements SensorManagerRece
         super.onPause();
     }
 
-
-    /**
-     * Acá Realizo las operaciones provenientes de los eventos de los
-     * sensores de android
-     * */
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        switch (resultCode) {
-            case AppConstants.STOPPED:
-                // askIfRealTimeControlON();
-                Log.d("MSG_FROM_SENSOR_MANAGER", "run real time?");
-                break;
-            case AppConstants.RUNNING:
-                Log.d("MSG_FROM_SENSOR_MANAGER", "stop real time or another action?");
-                // anotherActionWhenRealTimeOn();
-                break;
-            case AppConstants.CHANGE_MAP_STATUS:
-                Log.d("MSG_FROM_SENSOR_MANAGER", "show MapsActivity?");
-                Intent intent = new Intent(HomeActivity.this, MapsActivity.class);
-                startActivity(intent);
-        }
-    }
 }

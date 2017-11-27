@@ -22,6 +22,9 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Spliterator;
+import java.util.StringTokenizer;
+
 import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
 
 public class RealTimeActivity extends AppCompatActivity  implements SensorEventListener {
@@ -31,6 +34,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     private Button endTripButton;
     private TextView velocimeterTextView;
     private Sensor gyroscope;
+    private Sensor proximity;
     private TextView objetocercano;
 
     private SensorManager sensorManager;
@@ -48,18 +52,26 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
                     case RECIEVE_MESSAGE: // if receive massage
                         byte[] readBuf = (byte[]) msg.obj;
                         arrayMsg = new String(readBuf, 0, msg.arg1).split("\r\n"); // create string from bytes array, and split msgs
+                        StringTokenizer st = new StringTokenizer(arrayMsg[0], "|");
+
                         for (int i = 0; i < arrayMsg.length; i++) {
-                            strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
+
+                            strIncom = st.nextToken();
                             if (!strIncom.isEmpty()) {
 
 
-                                if(strIncom.equals("2")) {
+                                if(strIncom.equals(AppConstants.nearObject)) {
 
                                     objetocercano.setTextColor(getApplication().getResources().getColor(R.color.alerta));
                                     objetocercano.setText("ALERTA !! OBJETO CERCANO!!!!");
                                 }
+                                if(strIncom.equals(AppConstants.velocity)) {
 
+                                        Intent intent = new Intent("new-velocity-event");
+                                        intent.putExtra("velocity", st.nextToken() ); // value en km/h
+                                        LocalBroadcastManager.getInstance(RealTimeActivity.this).sendBroadcast(intent);
 
+                                }
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
                                 Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
                                 // Envío un Mensaje a la Arduino
@@ -118,6 +130,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
     }
 
     private void saveTrip() {
@@ -129,8 +142,8 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int velocity = intent.getIntExtra("velocity", 0);
-            velocimeterTextView.setText(Integer.toString(velocity)+ " km/h");
+            String velocity = intent.getStringExtra("velocity");
+            velocimeterTextView.setText(velocity + " km/h");
         }
     };
 
@@ -144,6 +157,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     protected void onResume() {
         super.onResume();
         connectedThread.setHandler(handler);
+
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
 
     }
@@ -162,7 +176,20 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 
-            Log.d("HomeActivity", "GYROSCOPE: x=" + x + " y=" + y + " z=" + z);
+            if(y > 7 || z > 7){
+
+                Log.d("RealTimeActivity", "GYROSCOPE: Lanzo Dialogo");
+                lanzarDialogoEmergencia();
+
+            }
+        }
+
+        if(sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY){
+
+            Toast.makeText(RealTimeActivity.this, "Proximidad !!!", Toast.LENGTH_SHORT).show();
+            Log.d("MSG_FROM_SENSOR_MANAGER", "show MapsActivity?");
+            /*Intent intent = new Intent(RealTimeActivity.this, MapsActivity.class);
+            startActivity(intent);*/
 
         }
     }
