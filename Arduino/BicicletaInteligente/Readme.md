@@ -1,2 +1,2 @@
 # Sketch principal
-Sistema que debe escribirse en el microcontrolador.
+Código fuente de la Bicicleta inteligente.
