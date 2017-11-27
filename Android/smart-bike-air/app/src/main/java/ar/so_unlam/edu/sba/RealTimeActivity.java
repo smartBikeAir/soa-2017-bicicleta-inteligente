@@ -156,10 +156,11 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
     protected void onResume() {
         super.onResume();
-        connectedThread.setHandler(handler);
-
+        if (connectedThread != null) {
+            connectedThread.setHandler(handler);
+        }
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-
+        sensorManager.registerListener(this, proximity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     protected void onPause() {
@@ -186,11 +187,16 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
         if(sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY){
 
-            Toast.makeText(RealTimeActivity.this, "Proximidad !!!", Toast.LENGTH_SHORT).show();
-            Log.d("MSG_FROM_SENSOR_MANAGER", "show MapsActivity?");
-            /*Intent intent = new Intent(RealTimeActivity.this, MapsActivity.class);
-            startActivity(intent);*/
-
+            float x = sensorEvent.values[0];
+            /*
+                El sensor de proximidad normalmente tiene a su valor x como el valor más
+                alto posible (maximum range). Si en algún momento su valor es menor, significa
+                que tenemos un objeto cercano.
+             */
+            if (x < proximity.getMaximumRange()) {
+                Intent intent = new Intent(RealTimeActivity.this, MapsActivity.class);
+                startActivity(intent);
+            }
         }
     }
 
