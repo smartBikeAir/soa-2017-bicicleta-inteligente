@@ -169,7 +169,9 @@ public class HomeActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        connectedThread.setHandler(handler);
+        if (connectedThread != null) {
+            connectedThread.setHandler(handler);
+        }
     }
 
     @Override

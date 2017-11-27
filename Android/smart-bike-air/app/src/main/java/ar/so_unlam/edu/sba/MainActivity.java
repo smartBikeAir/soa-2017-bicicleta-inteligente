@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         // Make sure we have access coarse location enabled, if not, prompt the user to enable it
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+      /*  if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("This app needs location access");
             builder.setMessage("Please grant location access so this app can detect peripherals.");
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             builder.show();
-        }
+        }*/
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();		// get Bluetooth adapter
         checkBTState();
@@ -199,6 +199,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "...Bluetooth ON...");
             } else {
                 //Prompt user to turn on Bluetooth
+
+                Log.d(TAG, "bluetoothAdapter no está habilitado");
+
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
@@ -207,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
     // This method verifies If there are paired devices
     public void getBoundedDevices() {
+        Log.d(TAG, "getBoundedDevices()");
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
             // Loop through paired devices
@@ -249,16 +253,16 @@ public class MainActivity extends AppCompatActivity {
             String action = intent.getAction();
             // When discovery finds a device, it sends ACTION_FOUND
             if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-                Log.d(MainActivity.this.getClass().toString(), "ACTION_STATE_CHANGED!");
+                Log.d(TAG, "ACTION_STATE_CHANGED!");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 // Device is now connected
-                Log.d(MainActivity.this.getClass().toString(), "ACTION_DISCOVERY_STARTED!");
+                Log.d(TAG, "ACTION_DISCOVERY_STARTED!");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 // Done searching
-                Log.d(MainActivity.this.getClass().toString(), "ACTION_DISCOVERY_FINISHED!");
+                Log.d(TAG, "ACTION_DISCOVERY_FINISHED!");
                 processConnection();
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                Log.d(MainActivity.this.getClass().toString(), "Continue Bluetooth Connection!");
+                Log.d(TAG, "Continue Bluetooth Connection!");
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
