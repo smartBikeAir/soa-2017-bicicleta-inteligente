@@ -7,24 +7,6 @@
     <PreferenceCategory
         android:title="@string/app_name">
 
-        <ListPreference
-            android:defaultValue="@string/pref_en_kilometros_default"
-            android:key="pref_unidad_distancia"
-            android:title="Distancias"
-            android:summary="Establece la unidad de medida"
-            android:dialogTitle="Distancias"
-            android:entries="@array/list_valores_distancia"
-            android:entryValues="@array/pref_nivel_valores"/>
-
-        <ListPreference
-            android:defaultValue="@string/pref_en_segundos_default"
-            android:key="pref_unidad_tiempo"
-            android:title="TIempos"
-            android:summary="Establece la unidad de medida del tiempo"
-            android:dialogTitle="Tiempo"
-            android:entries="@array/list_valores_tiempo"
-            android:entryValues="@array/pref_nivel_valores_tiempo"/>
-
     </PreferenceCategory>
 
     <PreferenceCategory

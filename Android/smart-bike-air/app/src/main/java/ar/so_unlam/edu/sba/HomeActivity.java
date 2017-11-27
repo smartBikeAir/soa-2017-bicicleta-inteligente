@@ -1,5 +1,7 @@
 package ar.so_unlam.edu.sba;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -12,6 +14,7 @@ import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -54,6 +57,23 @@ public class HomeActivity extends AppCompatActivity{
                                     Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
                                     startActivity(intent);
                                 }
+                                if(strIncom.equals(AppConstants.activateAlarm)){
+
+                                    Intent intent = new Intent("new-alarma-event");
+                                    intent.putExtra("alarma", "ACTIVATE" );
+                                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
+
+
+                                }
+                                if(strIncom.equals(AppConstants.deactivateAlarm)){
+
+                                    Intent intent = new Intent("new-alarma-event");
+                                    intent.putExtra("alarma", "DEACTIVATE" );
+                                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
+
+
+                                }
+
 
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
                                 Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
@@ -82,6 +102,8 @@ public class HomeActivity extends AppCompatActivity{
         alarmaButton = (Button)findViewById(R.id.alarmaButton);
         settingsButton = (Button)findViewById(R.id.settingsButton);
         buttonConnect = (Button)findViewById(R.id.buttonConnect);
+
+        alarmaButton.setText("DEACTIVATE");
 
         buttonConnect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,14 +139,14 @@ public class HomeActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-                if(alarmaButton.getText()=="DEACTIVATED"){
-                    connectedThread.write("3#");
-                    alarmaButton.setText("Active");
+                if(alarmaButton.getText()=="DEACTIVATE"){
+                    connectedThread.write(AppConstants.activateAlarm+"\n");
+                    alarmaButton.setText("ACTIVATE");
                     alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorAccent));
                 }else{
 
-                    connectedThread.write("4#");
-                    alarmaButton.setText("DEACTIVATED");
+                    connectedThread.write(AppConstants.deactivateAlarm+"\n");
+                    alarmaButton.setText("DEACTIVATE");
                     alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
 
                 }
@@ -134,6 +156,15 @@ public class HomeActivity extends AppCompatActivity{
         });
 
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String alarma = intent.getStringExtra("alarma");
+            alarmaButton.setText(alarma);
+        }
+    };
+
 
     @Override
     protected void onResume() {
@@ -147,5 +178,12 @@ public class HomeActivity extends AppCompatActivity{
     protected void onPause() {
         super.onPause();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+
 
 }
