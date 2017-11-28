@@ -180,6 +180,7 @@ void execStandBy() {
 }
 
 void execTraveling() {
+
     // Funcionalidad objeto cercano.
     if (nearObjectON == true) {
         long distanceToObject = ultrasonicSensor.checkDistance();        
@@ -242,7 +243,7 @@ void execTraveling() {
 
     // Sensado de velocidad.
     long velocityValue = Velocidad.medirVelocidad();
-    sendMessage(velocity, velocityValue); // Enviamos a Android la velocidad actual.
+    sendVelocity(velocityValue); // Enviamos a Android la velocidad actual.
     if (velocityValue == 0) { // Si el usuario está quieto.
 
         if (shouldSetTimestamp == true) {
@@ -320,11 +321,14 @@ message receiveMessage() {
 }
 
 void sendMessage(message identifier) {
-    // Se envía identifier
+     BT1.print(identifier);
+     BT1.print('\n');
 }
 
-void sendMessage(message identifier, int value) {
-  // Se envía identifier|value
+void sendVelocity(int value) {
+     value += 200; // Por convención para identificar a la velocidad, tomamos como base a 200.
+     BT1.print(value);
+     BT1.print('\n');
 }
 
 message getMessageFromInteger(int value) {
@@ -346,7 +350,7 @@ message getMessageFromInteger(int value) {
        case 6:
           return turnAlarmOff;
        case 7:
-          return velocity;
+          return velocity; //TODO: Chequear si realmente lo necesitamos.
        case 8:
           return nearObject;
        case 9:
