@@ -77,23 +77,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-        // Make sure we have access coarse location enabled, if not, prompt the user to enable it
-      /*  if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("This app needs location access");
-            builder.setMessage("Please grant location access so this app can detect peripherals.");
-            builder.setPositiveButton(android.R.string.ok, null);
-            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                            PERMISSION_REQUEST_COARSE_LOCATION);
-                }
-            });
-            builder.show();
-        }*/
-
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();		// get Bluetooth adapter
         checkBTState();
     }
@@ -149,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             try {
                 // If fail connection, so it will try native connection.
-                BluetoothSocket tmp = device.createRfcommSocketToServiceRecord(APP_UUID);;
+                BluetoothSocket tmp = device.createRfcommSocketToServiceRecord(APP_UUID);
                 Class<?> clazz = tmp.getRemoteDevice().getClass();
                 Class<?>[] paramTypes = new Class<?>[] {Integer.TYPE};
                 Method m = clazz.getMethod("createRfcommSocket", paramTypes);
