@@ -18,6 +18,8 @@ public class AppServiceImpl implements AppService {
 
     private static final AppServiceImpl INSTANCE = new AppServiceImpl();
 
+    private  String alarmSatus = AppConstants.DEACTIVATE_ALARM;
+
     private AppServiceImpl() {}
 
     public static AppServiceImpl getInstance() {
@@ -36,5 +38,11 @@ public class AppServiceImpl implements AppService {
         this.connectedThread = connectedThread;
     }
 
+    public String getAlarmaStatus() {
+        return alarmSatus;
+    }
 
+    public void setAlarmaStatus(String alarmSatus) {
+        this.alarmSatus = alarmSatus;
+    }
 }

@@ -68,6 +68,11 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
                                     Toast.makeText(getBaseContext(), "OBJETO CERCANOOOO!!!!!!!!!!!!!: ", Toast.LENGTH_LONG).show();
                                     // Envío un Mensaje a la Arduino
                                 }
+                                if(strIncom.equals(AppConstants.endedTrip)) {
+
+                                    Toast.makeText(getBaseContext(), "-------FIN VIAJE ------", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
                                 if(Integer.valueOf(strIncom)>= AppConstants.VALUE_MSJ_VELOCITY){
 
                                     int velocidad = Integer.valueOf(strIncom) - AppConstants.VALUE_MSJ_VELOCITY;

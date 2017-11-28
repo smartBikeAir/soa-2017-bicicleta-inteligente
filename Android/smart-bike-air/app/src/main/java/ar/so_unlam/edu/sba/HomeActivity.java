@@ -36,8 +36,12 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
     private Button settingsButton;
     private Sensor acceletometer;
     private SensorManager sensorManager;
+
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
+
     private ConnectedThread connectedThread = ((ConnectedThread)APP_SERVICE.getConnectedThread());
+
+
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             String[] arrayMsg;
@@ -124,11 +128,25 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
+        alarmaButton.setText(APP_SERVICE.getAlarmaStatus());
+
+        if(APP_SERVICE.getAlarmaStatus().equals(AppConstants.DEACTIVATE_ALARM)){
+            alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+            startTripButton.setText("START");
+            startTripButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+        } else{
+            alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorAccent));
+            startTripButton.setEnabled(false);
+            startTripButton.setText("NONSTART");
+            startTripButton.setTextColor(getApplication().getResources().getColor(R.color.colorAccent));
+        }
+
+
         alarmaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(alarmaButton.getText()==AppConstants.DEACTIVATE_ALARM){
+                if(alarmaButton.getText().toString().equals(AppConstants.DEACTIVATE_ALARM)){
 
                     connectedThread.write(AppConstants.activateAlarm+"\n");
                     Intent intent = new Intent("new-alarma-event");
@@ -193,11 +211,18 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
             String alarma = intent.getStringExtra("alarma");
 
             alarmaButton.setText(alarma);
+            APP_SERVICE.setAlarmaStatus(alarma);
 
             if(alarma.equals(AppConstants.DEACTIVATE_ALARM)){
                 alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+                startTripButton.setEnabled(true);
+                startTripButton.setText("START");
+                startTripButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
             } else{
                 alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorAccent));
+                startTripButton.setEnabled(false);
+                startTripButton.setText("NONSTART");
+                startTripButton.setTextColor(getApplication().getResources().getColor(R.color.colorAccent));
             }
 
         }
@@ -210,7 +235,8 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 
-            if(z > AppConstants.VALUE_MAX_ACCELEROMETER_Z|| z < AppConstants.VALUE_MIN_ACCELEROMETER_Z){
+            if((z > AppConstants.VALUE_MAX_ACCELEROMETER_Z|| z < AppConstants.VALUE_MIN_ACCELEROMETER_Z)
+                    && !APP_SERVICE.getAlarmaStatus().equals(AppConstants.ACTIVATE_ALARM)){
 
                 Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
                 startActivity(intent);

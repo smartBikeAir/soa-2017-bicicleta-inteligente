@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_directions_bike_android"
                 android:text="Start"
-                android:textColor="@color/primary_text" />
+                android:textColor="@color/colorPrimaryDark" />
 
             <LinearLayout
                 android:layout_width="336dp"
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:drawableTop="@drawable/alarma"
                     android:text= "DEACTIVATE"
-                    android:textColor="@color/primary_text" />
+                    android:textColor="@color/colorPrimaryDark" />
 
                 <Button
                     android:id="@+id/settingsButton"
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:drawableTop="@drawable/ic_settings_android"
                     android:text="Settings"
-                    android:textColor="@color/primary_text" />
+                    android:textColor="@color/colorPrimaryDark" />
 
             </LinearLayout>
 

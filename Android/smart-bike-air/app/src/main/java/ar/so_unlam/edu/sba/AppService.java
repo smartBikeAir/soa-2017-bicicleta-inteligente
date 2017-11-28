@@ -14,4 +14,7 @@ public interface AppService {
 
     void setConnectedThread(Thread connectedThread);
 
+    String getAlarmaStatus();
+
+    void setAlarmaStatus(String statusAlarma);
 }
