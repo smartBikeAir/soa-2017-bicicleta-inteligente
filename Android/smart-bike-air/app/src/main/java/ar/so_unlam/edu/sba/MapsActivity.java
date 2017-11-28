@@ -19,12 +19,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.util.Calendar;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
 
     private GoogleMap mMap;
+    private static final int googleMapZoom = 16;
+
+    // Atributos asociados al sensor de proximidad.
     private Sensor proximity;
     private SensorManager sensorManager;
     private long proximitySensorTimestamp = 0;
@@ -33,12 +35,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+
+        // Obtenemos el fragment a partir de un xml (layout).
+        SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
+        // Obtenemos el mapa de forma asincrónica. Una vez que esté listo,
+        // se va a llamar a: public void onMapReady(GoogleMap googleMap).
+        // Como vemos, por parámetro recibimos al mapa propiamente dicho.
         mapFragment.getMapAsync(this);
+
+        // No queremos que el SO apague la pantalla automáticamente. Setteamos que se mantenga
+        // encendida. Sólo el usuario podría apagarla.
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // Inicializamos atributos asociados a los sensores.
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        // Timestamp compartido con la pantalla RealTimeActivity.
         proximitySensorTimestamp = getIntent().getLongExtra("proximity_timestamp", 0);
     }
 
@@ -56,32 +71,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // Necesariamente el usuario tuvo que haber dado permisos de ACCESS_FINE_LOCATION (alta
+        // precisión).
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
+
+            // Habilitamos capa "My location". Este habilita un botón de "mi ubicación" que se verá
+            // en la esquina superior derecha del mapa.
             mMap.setMyLocationEnabled(true);
 
-            // Getting LocationManager object from System Service LOCATION_SERVICE
+            // Obtenemos referencia a LocationManager para así poder hacer uso de los servicios de
+            // localización del sistema.
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-            // Creating a criteria object to retrieve provider
+            // Instancia necesaria para poder obtener un provider.
             Criteria criteria = new Criteria();
 
-            // Getting the name of the best provider
+            // Obtendo un proveedor para mi localización.
             String provider = locationManager.getBestProvider(criteria, true);
 
-            // Getting Current Location
             Location location = locationManager.getLastKnownLocation(provider);
-
             if (location != null) {
-                // Getting latitude of the current location
                 double latitude = location.getLatitude();
-
-                // Getting longitude of the current location
                 double longitude = location.getLongitude();
 
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 16));
+                // Movemos el mapa en mi ubicación.
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), googleMapZoom));
             }
-
         }
     }
 
@@ -100,8 +116,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (x < proximity.getMaximumRange() && differenceBetweenDates > 1500) {
 
                 // Guardamos marca de tiempo asociada a la última vez que el sensor
-                // detectó objeto cercano. Fue necesario que pasen 1500 ms desde la última
-                // vez que se había detectado uno.
+                // detectó objeto cercano. Es necesario que pasen 1500 ms desde la última
+                // vez que se detectó uno.
                 proximitySensorTimestamp = Calendar.getInstance().getTime().getTime();
 
                 Intent result = new Intent();

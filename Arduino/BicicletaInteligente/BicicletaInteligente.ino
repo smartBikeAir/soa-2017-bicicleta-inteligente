@@ -38,12 +38,13 @@
 // bicicleta (detrás de la misma).
 #define MIN_DISTANCE_TO_OBJECT 30 // En cm
 
-// Variables/constantes necesarias para la transición automática de estado: traveling -> standBy.
-#define MIN_TIME_FOR_CHANGE_TO_STAND_BY 60000 //300000 // 5 minutos.
+// Constante necesaria para la transición automática de estado: traveling -> standBy.
+#define MIN_TIME_FOR_CHANGE_TO_STAND_BY 60000 //1 minuto.
 
 // Tiempo minimo que debe transcurrir para contabilizar un cambio de estado de las luces del chasis
 #define MIN_TIME_FOR_SWITCH_CHASSIS_LIGHTS 100 //Aprox ~5 seg
 
+// Variables necesarias para la transición automática de estado: traveling -> standBy.
 boolean shouldSetTimestamp = true;
 unsigned long velocityZeroTimestamp;
 
@@ -180,6 +181,7 @@ void execStandBy() {
 }
 
 void execTraveling() {
+
     // Funcionalidad objeto cercano.
     if (nearObjectON == true) {
         long distanceToObject = ultrasonicSensor.checkDistance();        
@@ -242,7 +244,7 @@ void execTraveling() {
 
     // Sensado de velocidad.
     long velocityValue = Velocidad.medirVelocidad();
-    sendMessage(velocity, velocityValue); // Enviamos a Android la velocidad actual.
+    sendVelocity(velocityValue); // Enviamos a Android la velocidad actual.
     if (velocityValue == 0) { // Si el usuario está quieto.
 
         if (shouldSetTimestamp == true) {
@@ -320,11 +322,14 @@ message receiveMessage() {
 }
 
 void sendMessage(message identifier) {
-    // Se envía identifier
+     BT1.print(identifier);
+     BT1.print('\n');
 }
 
-void sendMessage(message identifier, int value) {
-  // Se envía identifier|value
+void sendVelocity(int value) {
+     value += 200; // Por convención para identificar a la velocidad, tomamos como base a 200.
+     BT1.print(value);
+     BT1.print('\n');
 }
 
 message getMessageFromInteger(int value) {
@@ -346,7 +351,7 @@ message getMessageFromInteger(int value) {
        case 6:
           return turnAlarmOff;
        case 7:
-          return velocity;
+          return velocity; //TODO: Chequear si realmente lo necesitamos.
        case 8:
           return nearObject;
        case 9:

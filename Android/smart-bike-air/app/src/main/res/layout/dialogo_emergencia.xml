@@ -7,14 +7,10 @@
 
         <Button
             android:id="@+id/startCall"
-            android:layout_width="match_parent"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Llamar" />
+            android:drawableTop="@drawable/llamada_telefonica"
+            />
 
-        <Button
-            android:id="@+id/cancelar_emergencia"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cancelar" />
-        
 </LinearLayout>

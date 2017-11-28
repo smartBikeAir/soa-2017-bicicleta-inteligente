@@ -14,12 +14,7 @@ public interface AppService {
 
     void setConnectedThread(Thread connectedThread);
 
-    int getDeviceStatus();
+    String getAlarmaStatus();
 
-    void setDeviceStatus(int deviceStatus);
-
-    int getMapStatus();
-
-    void setMapStatus(int mapSatus);
-
+    void setAlarmaStatus(String statusAlarma);
 }

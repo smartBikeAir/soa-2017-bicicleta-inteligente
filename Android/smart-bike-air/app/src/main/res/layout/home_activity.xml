@@ -31,14 +31,15 @@
 
             <Button
                 android:id="@+id/startTripButton"
-                android:layout_width="match_parent"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="336dp"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_directions_bike_android"
-                android:textColor="@color/primary_text"
                 android:text="Start"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
+                android:textColor="@color/colorPrimaryDark" />
+
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="336dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -50,9 +51,9 @@
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/alarma_apagada"
-                    android:text="DEACTIVATED"
-                    android:textColor="@color/primary_text" />
+                    android:drawableTop="@drawable/alarma"
+                    android:text= "DEACTIVATE"
+                    android:textColor="@color/colorPrimaryDark" />
 
                 <Button
                     android:id="@+id/settingsButton"
@@ -61,16 +62,8 @@
                     android:layout_height="wrap_content"
                     android:drawableTop="@drawable/ic_settings_android"
                     android:text="Settings"
-                    android:textColor="@color/primary_text" />
+                    android:textColor="@color/colorPrimaryDark" />
 
-                <Button
-                    android:id="@+id/buttonConnect"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/primary_text"
-                    android:drawableTop="@drawable/ic_settings_bluetooth_black_48dp"
-                    android:text="Connect"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
             </LinearLayout>
 
         </LinearLayout>

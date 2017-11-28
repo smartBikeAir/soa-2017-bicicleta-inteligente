@@ -18,9 +18,7 @@ public class AppServiceImpl implements AppService {
 
     private static final AppServiceImpl INSTANCE = new AppServiceImpl();
 
-    private int deviceStatus = AppConstants.STOPPED;
-
-    private  int mapSatus = AppConstants.MAP_STATUS_HIDDEN;
+    private  String alarmSatus = AppConstants.DEACTIVATE_ALARM;
 
     private AppServiceImpl() {}
 
@@ -32,7 +30,6 @@ public class AppServiceImpl implements AppService {
         return AppServiceImpl.atomicInteger;
     }
 
-
     public Thread getConnectedThread() {
         return connectedThread;
     }
@@ -41,27 +38,11 @@ public class AppServiceImpl implements AppService {
         this.connectedThread = connectedThread;
     }
 
-
-    public int getDeviceStatus() {
-        return deviceStatus;
+    public String getAlarmaStatus() {
+        return alarmSatus;
     }
 
-    public void setDeviceStatus(int deviceStatus) {
-        this.deviceStatus = deviceStatus;
+    public void setAlarmaStatus(String alarmSatus) {
+        this.alarmSatus = alarmSatus;
     }
-
-    @Override
-    public int getMapStatus() {
-        return mapSatus;
-    }
-
-    public void setMapStatus(int mapSatus) {
-        this.mapSatus = mapSatus;
-    }
-
-    private void errorExit(Context context, String title, String message){
-        Toast.makeText(context, title + " - " + message, Toast.LENGTH_LONG).show();
-        ((Activity)context).finish();
-    }
-
 }
