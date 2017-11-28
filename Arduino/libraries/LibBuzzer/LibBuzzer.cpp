@@ -12,41 +12,22 @@ LibBuzzer::LibBuzzer(int iPBuzzer){
 	this->iPBuzzer = iPBuzzer;
 	this->frequency = 3500;
 	this->cycleCounter = 0;
-	
+
 	ulBuzzerSonar = 0;
-
 	pinMode(iPBuzzer, OUTPUT);
-
-}
-
-void LibBuzzer::setBuzzer(int iPBuzzer){
-
-	this->iPBuzzer = iPBuzzer;
-
-
-}
-
-int LibBuzzer::getBuzzer(){
-
-	return this->iPBuzzer;
-
 }
 
 void LibBuzzer::activarBuzzer(int Value){
-
-	//Guardo una marca de tiempo para controlar el sonido del buzzer
-	analogWrite(iPBuzzer, Value);
-
+	 analogWrite(iPBuzzer, Value);
 }
 
 void LibBuzzer::desactivarBuzzer(){
-
 	analogWrite(iPBuzzer,0);
 	noTone(iPBuzzer);
 }
 
 void LibBuzzer::sonarAlarmaAlternada() {
-	tone(iPBuzzer, frequency,100);
+	tone(iPBuzzer, frequency, 100);
 	if(cycleCounter > 200) {
 		// Momento de cambiar de tono
 		cycleCounter = 0; // reseteo el contador
@@ -57,6 +38,6 @@ void LibBuzzer::sonarAlarmaAlternada() {
 			frequency = 2000;
 		}
 	} else {
-		cycleCounter++;
+		  cycleCounter++;
 	}
 }

@@ -51,7 +51,7 @@ unsigned long velocityZeroTimestamp;
 int detectedLightTimeCounter = 0;
 int noLightTimeCounter = 0;
 
-#define END_CMD_CHAR '#'
+#define END_CMD_CHAR '#' // Bluetooth: caracter de fin de mensaje.
 SoftwareSerial BT1(BLUETOOTH_RX, BLUETOOTH_TX);
 
 // Definicion de sensores

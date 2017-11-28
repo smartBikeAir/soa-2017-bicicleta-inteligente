@@ -6,24 +6,25 @@
 
 #include "LibLDR.h"
 
-bool bEstado;
+bool bEstado = false;
 
-	// Definimos el constructor de la clase se debe pasar los PIN correspondientes.
 LibLDR::LibLDR(int iPin){
 
 	this->iPin = iPin;
+
+  // Umbrales definidos para utilizar histéris.
   this->minVal = 500;
   this->maxVal = 700;
+
   pinMode(iPin, INPUT);
 }
 
-bool LibLDR::hayLuz(){
+bool LibLDR::hayLuz() {
 
 	  val = analogRead(iPin);
 
-		if(val < minVal) bEstado = true; // cierro el rele (enciendo la tira de LED)
+		if(val < minVal) bEstado = true;
 		if(val > maxVal) bEstado = false;
 
 		return bEstado;
-
 }

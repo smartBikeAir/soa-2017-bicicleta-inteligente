@@ -6,7 +6,6 @@
 
 #include "LibLlaveTresEstados.h"
 
-int ledAlarma=13; // Asignación de la salida ditital para el encendido del led lado izquierdo. // Solo para prueba, visualización de alarma armada
 unsigned long INICIO_PD;
 unsigned long INICIO_PI;
 unsigned long INICIO_DERECHA;
@@ -25,7 +24,6 @@ LibLlaveTresEstados::LibLlaveTresEstados(int pinIzquierda, int pinDerecha) {
   this->pinDer = pinDerecha;
   pinMode(pinDerecha, INPUT);
   pinMode(pinIzquierda, INPUT);
-  pinMode(ledAlarma, OUTPUT);
 }
 
 estadoActual LibLlaveTresEstados::leerEstado() {
@@ -63,7 +61,6 @@ if (digitalRead(this->pinDer)==LOW) { // de acuerdo a si el pulsador es NA o NC 
      ACTUAL=millis();
 
      if (ACTUAL < INTERVALO_TIEMPO + INICIO_PD) {// Primer Estado hasta tanto se cumpla el tiempo establecido
-        //digitalWrite(RIGHT_LED, HIGH);
      }
      else {
         //digitalWrite(RIGHT_LED, LOW);
@@ -74,15 +71,11 @@ if (digitalRead(this->pinDer)==LOW) { // de acuerdo a si el pulsador es NA o NC 
 //// Funcion de parpadeo - fin ////////////////
 
  }
- else {
-      //digitalWrite(RIGHT_LED, LOW);
- }
 
 //// Analisis de combinación - Inicio ////////////
 
 if (PULSOS_DERECHA==CLAVE_ARMAR_ALARMA) {
     // ARMAR ALARMA
-    digitalWrite(ledAlarma, HIGH);  //solo para visualizar un cambio
     return ddd;
 }
 else {
@@ -113,7 +106,6 @@ if (digitalRead(this->pinIzq)==LOW) { // de acuerdo a si el pulsador es NA o NC 
           PULSOS_IZQUIERDA++;
       }
    }
-  //PULSOS_IZQUIERDA++;
 
 //// Funcion de parpadeo - Inicio ////////////////
 
@@ -122,7 +114,6 @@ if (digitalRead(this->pinIzq)==LOW) { // de acuerdo a si el pulsador es NA o NC 
      //digitalWrite(LEFT_LED, HIGH);
   }
   else {
-      //digitalWrite(LEFT_LED, LOW);
       if (ACTUAL > ((INTERVALO_TIEMPO * 2)+ INICIO_PI)) {
           INICIO_PI= millis();
       }
@@ -136,10 +127,8 @@ else {
 
 //// Analisis de combinación DESARMAR ALARMA - Inicio ////////////
 
- if (/*PULSOS_DERECHA==(CLAVE_ARMAR_ALARMA-1) and */ PULSOS_IZQUIERDA==CLAVE_DESARMAR_ALARMA) {
-
+ if (PULSOS_IZQUIERDA==CLAVE_DESARMAR_ALARMA) {
     // DESARMAR ALARMA
-    digitalWrite(ledAlarma, LOW); //solo para visualizar un cambio
     return ii;
   }
   else {
