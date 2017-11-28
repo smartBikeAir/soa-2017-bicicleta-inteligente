@@ -327,7 +327,7 @@ void sendMessage(message identifier) {
 }
 
 void sendVelocity(int value) {
-     value += 200; // Por convención para identificar a la velocidad, tomamos como base a 200.
+     value += 700; // Por convención para identificar a la velocidad, tomamos como base a 200.
      BT1.print(value);
      BT1.print('\n');
 }
