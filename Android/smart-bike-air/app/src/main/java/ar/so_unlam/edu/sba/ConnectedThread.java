@@ -51,28 +51,30 @@ public class ConnectedThread extends Thread {
                 // Read from the InputStream
                 // Get number of bytes and message in "buffer"
                 bytes = inputStream.read(buffer);
+
                 // Send to message queue Handler
-                synchronized (atomicInteger) {
+                handler.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();
+                /* synchronized (atomicInteger) {
                     while (atomicInteger.get() == MAX_READERS) {
                         atomicInteger.wait();
                     }
                     handler.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();
                     atomicInteger.notifyAll();
                     atomicInteger.incrementAndGet();
-                }
+                } */
             } catch (IOException e) {
                 String error = e.getMessage();
                 byte[] errorBytes = error.getBytes();
                 // Send to message queue Handler
                 handler.obtainMessage(RECIEVE_MESSAGE, errorBytes.length, -1, errorBytes).sendToTarget();
                 break;
-            } catch (InterruptedException e) {
+            } /* catch (InterruptedException e) {
                 String error = e.getMessage();
                 byte[] errorBytes = error.getBytes();
                 // Send to message queue Handler
                 handler.obtainMessage(RECIEVE_MESSAGE, errorBytes.length, -1, errorBytes).sendToTarget();
                 break;
-            }
+            } */
 
         }
     }
