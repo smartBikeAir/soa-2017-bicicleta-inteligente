@@ -46,6 +46,9 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
     private long proximitySensorTimestamp = 0;
 
+    private long timestampLastVelocity;
+    private double travelledDistance = 0.0;
+
     private int velocityAvg = 0; // m/s
     private int velocityCount = 0;
 
@@ -59,8 +62,10 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
                     case RECIEVE_MESSAGE: // if receive massage
                         byte[] readBuf = (byte[]) msg.obj;
                         arrayMsg = new String(readBuf, 0, msg.arg1).split("\r\n"); // create string from bytes array, and split msgs
+                        Log.d("receivedMessage", "arrayMsg " + arrayMsg[0]);
                         for (int i = 0; i < arrayMsg.length; i++) {
                             strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
+                            Log.d("receivedMessage", "strIncom " + strIncom);
                             if (!strIncom.isEmpty()) {
 
                                 if(strIncom.equals(AppConstants.nearObject)) {
@@ -105,28 +110,12 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_real_time);
 
+        timestampLastVelocity = SystemClock.elapsedRealtime()/1000;
         distanceTextView = (TextView)findViewById(R.id.distance);
 
         // Chronometer
         chronometer = (Chronometer)findViewById(R.id.chronometer);
-        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
-
-                long elapsedSeconds = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
-
-                // distance en m
-                // velocityAvg en m/s
-                // elapsedSeconds en s
-                int distance = (int) (velocityAvg * elapsedSeconds);
-                distanceTextView.setText(distance + " m");
-            }
-        });
-
         chronometer.start();
-
-
 
         // User location
         geolocationButton = (Button)findViewById(R.id.geolocationButton);
@@ -168,16 +157,41 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         @Override
         public void onReceive(Context context, Intent intent) {
             String velocity = intent.getStringExtra("velocity");
-            velocimeterTextView.setText(velocity + " km/h");
 
-            velocityCount++;
+            // Si es un mensaje de velocidad válido
+            if(velocity != null) {
+                // Actualizo display de velocidad actual
+                velocimeterTextView.setText(velocity + " km/h");
+                Log.d("velocity", velocity);
 
-            // Necesito a la velocidad en m/s.
+                // Tomo el tiempo de recepción del mensaje (en segundos)
+                final long timestampCurrentVelocity = SystemClock.elapsedRealtime()/1000;
 
-            if( velocity != null){
-            int velocityInMs = (Integer.valueOf(velocity) * 1000) / 3600;
+                // Calculo la diferencia respecto de tiempo del último mensaje de velocidad (en segundos)
+                final long timeSinceLastMessage = timestampCurrentVelocity - timestampLastVelocity;
+                Log.d("velocity", "timeSinceLastMessage " + timeSinceLastMessage);
 
-            velocityAvg = (velocityAvg + velocityInMs) / velocityCount;}
+                // Paso la velocidad a Km/seg
+                double velocityInKmS = Double.valueOf(velocity) / 3600;
+                Log.d("velocity", "velocityInKms " + velocityInKmS);
+
+                // Calculo distancia recorrida desde la última velocidad recibida
+                double deltaDistance = velocityInKmS * timeSinceLastMessage;
+                Log.d("velocity", "deltaDistance " + deltaDistance);
+
+                // Acumulo distancia recorrida
+                travelledDistance += deltaDistance;
+                Log.d("velocity", "travelledDistance " + travelledDistance);
+
+                // Actualizo el tiempo del último mensaje de velocidad recibido
+                timestampLastVelocity = timestampCurrentVelocity;
+
+                distanceTextView.setText(String.format("%.2f",travelledDistance) + " km");
+                Log.d("velocity", "distanceTextView.getText " + distanceTextView.getText());
+            } else {
+                // Hubo un problema en la recepción de la velocidad
+                velocimeterTextView.setText("--");
+            }
         }
     };
 

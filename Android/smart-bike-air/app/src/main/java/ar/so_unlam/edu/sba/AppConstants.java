@@ -17,7 +17,7 @@ public class AppConstants {
 
     public static final int VALUE_MIN_ACCELEROMETER_Z = -10;
 
-    public static final int VALUE_MSJ_VELOCITY = 200;
+    public static final int VALUE_MSJ_VELOCITY = 700;
 
     public static final String  ACTIVATE_ALARM = "ACTIVATE";
 
