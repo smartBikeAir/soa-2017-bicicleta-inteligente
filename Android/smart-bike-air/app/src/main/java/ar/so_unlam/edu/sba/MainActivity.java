@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
 
-    //private SensorManagerReceiver receiver;
-
     private String address = null;
 
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;

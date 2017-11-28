@@ -22,64 +22,70 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Calendar;
-import java.util.StringTokenizer;
+
 
 import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
 
 public class RealTimeActivity extends AppCompatActivity  implements SensorEventListener {
 
     private Chronometer chronometer;
+
     private Button geolocationButton;
     private Button endTripButton;
+
     private TextView velocimeterTextView;
     private TextView distanceTextView;
+
     private Sensor gyroscope;
     private Sensor proximity;
-    private TextView objetocercano;
+
     private SensorManager sensorManager;
+
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
     private ConnectedThread connectedThread = ((ConnectedThread)APP_SERVICE.getConnectedThread());
+
     private long proximitySensorTimestamp = 0;
+
     private int velocityAvg = 0; // m/s
     private int velocityCount = 0;
+
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             String[] arrayMsg;
             String strIncom = "";
+            Log.d("ArduinoCon_BT", "MSG: " + msg.arg1);
             try {
                 switch (msg.what) {
                     case RECIEVE_MESSAGE: // if receive massage
                         byte[] readBuf = (byte[]) msg.obj;
                         arrayMsg = new String(readBuf, 0, msg.arg1).split("\r\n"); // create string from bytes array, and split msgs
-                        StringTokenizer st = new StringTokenizer(arrayMsg[0], "|");
-
                         for (int i = 0; i < arrayMsg.length; i++) {
+                            strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
+                            if (!strIncom.isEmpty()) {
 
-                        strIncom = st.nextToken();
-                        if (!strIncom.isEmpty()) {
+                                if(strIncom.equals(AppConstants.nearObject)) {
+
+                                    Toast.makeText(getBaseContext(), "OBJETO CERCANOOOO!!!!!!!!!!!!!: ", Toast.LENGTH_LONG).show();
+                                    // Envío un Mensaje a la Arduino
+                                }
+                                if(Integer.valueOf(strIncom)>= 200){
+
+                                    int velocidad = Integer.valueOf(strIncom) - 200;
+
+                                    Intent intent = new Intent("new-velocity-event");
+                                    intent.putExtra("velocity", String.valueOf(velocidad) );
+                                    LocalBroadcastManager.getInstance(RealTimeActivity.this).sendBroadcast(intent);
+
+                                }
+                                Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
+                                Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
+                                // Envío un Mensaje a la Arduino
+                                connectedThread.write("ok\n");
 
 
-                            if (strIncom.equals(AppConstants.nearObject)) {
-
-                                Toast.makeText(getBaseContext(), "OBJETO CERCANO !!!!!", Toast.LENGTH_LONG).show();
                             }
-                            if (strIncom.equals(AppConstants.velocity)) {
-
-                                Intent intent = new Intent("new-velocity-event");
-                                intent.putExtra("velocity", st.nextToken()); // value en km/h
-                                LocalBroadcastManager.getInstance(RealTimeActivity.this).sendBroadcast(intent);
-
-                            }
-                            Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
-                            Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
-                            // Envío un Mensaje a la Arduino
-                            connectedThread.write("ok\n");
-
-
                         }
-                    }
                 }
-
             } catch (Exception e) {
                 String msj = "In handleMessage(), fail process info: " + e.getMessage() + "." + strIncom;
                 Toast.makeText(getBaseContext(), "Fatal Error" + " - " + msj, Toast.LENGTH_LONG).show();
@@ -87,6 +93,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
             }
         };
     };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,7 +120,6 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         });
         chronometer.start();
 
-        objetocercano = (TextView)findViewById(R.id.objetocercano);
 
 
         // User location
@@ -132,7 +138,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         endTripButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveTrip();
+                connectedThread.write(AppConstants.endedTrip+"\n");
                 finish();
             }
         });
@@ -149,23 +155,20 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
     }
 
-    private void saveTrip() {
-        long elapsedSeconds = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
-        Trip trip = new Trip(elapsedSeconds);
-        TripsManager.getInstance().saveTrip(trip);
-    }
-
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String velocity = intent.getStringExtra("velocity");
             velocimeterTextView.setText(velocity + " km/h");
+
             velocityCount++;
 
             // Necesito a la velocidad en m/s.
-            int velocityInMs = (Integer.getInteger(velocity) * 1000) / 3600;
 
-            velocityAvg = (velocityAvg + velocityInMs) / velocityCount;
+            if( velocity != null){
+            int velocityInMs = (Integer.valueOf(velocity) * 1000) / 3600;
+
+            velocityAvg = (velocityAvg + velocityInMs) / velocityCount;}
         }
     };
 

@@ -18,8 +18,8 @@ public interface AppService {
 
     void setDeviceStatus(int deviceStatus);
 
-    int getMapStatus();
+    int getRealTimeStatus();
 
-    void setMapStatus(int mapSatus);
+    void setRealTimeStatus(int realTimeSatus);
 
 }

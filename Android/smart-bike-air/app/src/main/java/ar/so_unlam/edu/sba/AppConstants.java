@@ -13,11 +13,11 @@ public class AppConstants {
 
     public static final int RUNNING = 1;
 
-    public static final int MAP_STATUS_HIDDEN = 0;
+    public static final int REALTIME_STATUS_HIDDEN = 0;
 
-    public static final int MAP_STATUS_SHOWN = 1;
+    public static final int REALTIME_STATUS_SHOWN = 1;
 
-    public static final int CHANGE_MAP_STATUS = 2;
+    public static final int REALTIME_MAP_STATUS = 2;
 
     public static final String  unknown = "0";
 

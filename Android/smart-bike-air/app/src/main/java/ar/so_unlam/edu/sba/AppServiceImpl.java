@@ -20,7 +20,7 @@ public class AppServiceImpl implements AppService {
 
     private int deviceStatus = AppConstants.STOPPED;
 
-    private  int mapSatus = AppConstants.MAP_STATUS_HIDDEN;
+    private  int realTime = AppConstants.REALTIME_STATUS_HIDDEN;
 
     private AppServiceImpl() {}
 
@@ -51,12 +51,12 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public int getMapStatus() {
-        return mapSatus;
+    public int getRealTimeStatus() {
+        return realTime;
     }
 
-    public void setMapStatus(int mapSatus) {
-        this.mapSatus = mapSatus;
+    public void setRealTimeStatus(int realTime) {
+        this.realTime = realTime;
     }
 
     private void errorExit(Context context, String title, String message){

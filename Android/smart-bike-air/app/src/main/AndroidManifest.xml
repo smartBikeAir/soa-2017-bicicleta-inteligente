@@ -64,12 +64,6 @@
             android:theme="@style/Theme.AppCompat.Dialog.Alert">
         </activity>
 
-        <service
-            android:name="ar.so_unlam.edu.local_sensors.SensorManagerService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>
-
     </application>
 
 </manifest>
