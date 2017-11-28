@@ -28,7 +28,7 @@ public class DialogoAlarmaSonando extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialogo_alarma_sonando);
 
-        offAlarm = (Button)findViewById(R.id.settingsButton);
+        offAlarm = (Button)findViewById(R.id.turn_Alarm_Off);
 
         offAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
