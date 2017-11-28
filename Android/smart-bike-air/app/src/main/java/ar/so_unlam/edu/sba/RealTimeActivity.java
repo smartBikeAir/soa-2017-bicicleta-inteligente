@@ -221,7 +221,8 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
             if (x < proximity.getMaximumRange() && differenceBetweenDates > 1500) {
 
                 // Guardamos marca de tiempo asociada a la última vez que el sensor
-                // detectó objeto cercano.
+                // detectó objeto cercano. Es necesario que pasen 1500 ms desde la última
+                // vez que se detectó uno.
                 proximitySensorTimestamp = Calendar.getInstance().getTime().getTime();
 
                 Intent intent = new Intent(RealTimeActivity.this, MapsActivity.class);

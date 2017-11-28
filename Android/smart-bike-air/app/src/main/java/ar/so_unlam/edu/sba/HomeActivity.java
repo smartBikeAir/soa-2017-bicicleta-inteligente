@@ -1,5 +1,6 @@
 package ar.so_unlam.edu.sba;
 
+import android.Manifest;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -8,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,18 +21,14 @@ import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
 
 public class HomeActivity extends AppCompatActivity implements SensorEventListener {
 
+    private static final int PERMISSION_REQUEST_FINE_LOCATION = 1;
     private Button startTripButton;
     private Button alarmaButton;
     private Button settingsButton;
-
     private Sensor acceletometer;
-
     private SensorManager sensorManager;
-
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
-
     private ConnectedThread connectedThread = ((ConnectedThread)APP_SERVICE.getConnectedThread());
-
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             String[] arrayMsg;
@@ -134,10 +132,15 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         acceletometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ActivityCompat.requestPermissions(HomeActivity.this,
+                new String[]{ Manifest.permission.ACCESS_FINE_LOCATION},
+                PERMISSION_REQUEST_FINE_LOCATION);
+    }
 
     @Override
     protected void onResume() {
@@ -145,7 +148,6 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
         if (connectedThread != null) {
             connectedThread.setHandler(handler);
         }
-
         sensorManager.registerListener(this, acceletometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
