@@ -39,7 +39,7 @@
 #define MIN_DISTANCE_TO_OBJECT 30 // En cm
 
 // Variables/constantes necesarias para la transición automática de estado: traveling -> standBy.
-#define MIN_TIME_FOR_CHANGE_TO_STAND_BY 60000 //300000 // 5 minutos.
+#define MIN_TIME_FOR_CHANGE_TO_STAND_BY 60000 //1 minuto.
 
 // Tiempo minimo que debe transcurrir para contabilizar un cambio de estado de las luces del chasis
 #define MIN_TIME_FOR_SWITCH_CHASSIS_LIGHTS 100 //Aprox ~5 seg
