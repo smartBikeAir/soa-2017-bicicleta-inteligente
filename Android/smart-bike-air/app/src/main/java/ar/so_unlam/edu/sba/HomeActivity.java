@@ -1,6 +1,9 @@
 package ar.so_unlam.edu.sba;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,6 +11,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -47,22 +51,27 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
 
                                 if(strIncom.equals(AppConstants.startedTrip)) {
 
-                                    // Envío un Mensaje a la Arduino
                                     Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
                                     startActivity(intent);
                                 }
                                 if(strIncom.equals(AppConstants.activateAlarm)){
 
+                                    Intent intent = new Intent("new-alarma-event");
+                                    intent.putExtra("alarma", String.valueOf(AppConstants.ACTIVATE_ALARM) );
+                                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
 
 
                                 }
                                 if(strIncom.equals(AppConstants.deactivateAlarm)){
 
+                                    Intent intent = new Intent("new-alarma-event");
+                                    intent.putExtra("alarma", String.valueOf(AppConstants.DEACTIVATE_ALARM) );
+                                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
+
 
                                 }
                                 if(strIncom.equals(AppConstants.turnAlarmOn)){
-
-
+                                    lanzarDialogoAlarma();
                                 }
 
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
@@ -116,15 +125,19 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
 
-                if(alarmaButton.getText()=="DEACTIVATE"){
+                if(alarmaButton.getText()==AppConstants.DEACTIVATE_ALARM){
+
                     connectedThread.write(AppConstants.activateAlarm+"\n");
-                    alarmaButton.setText("ACTIVATE");
-                    alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorAccent));
+                    Intent intent = new Intent("new-alarma-event");
+                    intent.putExtra("alarma", String.valueOf(AppConstants.ACTIVATE_ALARM) );
+                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
+
                 }else{
 
                     connectedThread.write(AppConstants.deactivateAlarm+"\n");
-                    alarmaButton.setText("DEACTIVATE");
-                    alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+                    Intent intent = new Intent("new-alarma-event");
+                    intent.putExtra("alarma", String.valueOf(AppConstants.DEACTIVATE_ALARM) );
+                    LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
 
                 }
 
@@ -132,12 +145,13 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("new-alarma-event"));
+
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         acceletometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
     }
-
-
 
     @Override
     protected void onResume() {
@@ -153,16 +167,32 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
+        sensorManager.unregisterListener(this);
     }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
+            String alarma = intent.getStringExtra("alarma");
 
+            alarmaButton.setText(alarma);
 
+            if(alarma.equals(AppConstants.DEACTIVATE_ALARM)){
+                alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+            } else{
+                alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorAccent));
+            }
+
+        }
+    };
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
@@ -171,12 +201,13 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 
-            Log.d("HomeActivity", " z:"+z);
             if(z > 10 || z < -10){
-                Log.d("HomeActivity", "ACELEROMETRO: ACTIVO REALTIME");
-                // Envío un Mensaje a la Arduino
+
                 Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
                 startActivity(intent);
+
+                // envio msj arduino actualizando su modo a viaje
+                connectedThread.write(AppConstants.startedTrip+"\n");
             }
         }
     }
@@ -185,4 +216,12 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+    public void lanzarDialogoAlarma(){
+        Intent i = new Intent(this, DialogoAlarmaSonando.class);
+        startActivity(i);
+    }
+
+
+
 }

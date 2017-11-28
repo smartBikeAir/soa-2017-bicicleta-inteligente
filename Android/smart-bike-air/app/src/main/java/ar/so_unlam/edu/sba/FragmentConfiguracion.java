@@ -12,10 +12,6 @@ import android.widget.Toast;
 
 import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
 
-/**
- * Created by irmab on 7/11/2017.
- */
-
 public class FragmentConfiguracion extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     public static final String KEY_PREF_LUCES= "pref_luces";

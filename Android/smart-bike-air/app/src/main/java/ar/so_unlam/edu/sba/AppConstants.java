@@ -9,15 +9,13 @@ public class AppConstants {
     // Status for Handler
     public static final int RECIEVE_MESSAGE = 1;
 
-    public static final int STOPPED = 0;
+    public static final int VALUE_MAX_GIROSCOPE_Z = 7;
 
-    public static final int RUNNING = 1;
+    public static final int VALUE_MAX_GIROSCOPE_Y = 7;
 
-    public static final int REALTIME_STATUS_HIDDEN = 0;
+    public static final String  ACTIVATE_ALARM = "ACTIVATE";
 
-    public static final int REALTIME_STATUS_SHOWN = 1;
-
-    public static final int REALTIME_MAP_STATUS = 2;
+    public static final String  DEACTIVATE_ALARM = "DEACTIVATE";
 
     public static final String  unknown = "0";
 

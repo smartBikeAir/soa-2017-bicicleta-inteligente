@@ -18,10 +18,6 @@ public class AppServiceImpl implements AppService {
 
     private static final AppServiceImpl INSTANCE = new AppServiceImpl();
 
-    private int deviceStatus = AppConstants.STOPPED;
-
-    private  int realTime = AppConstants.REALTIME_STATUS_HIDDEN;
-
     private AppServiceImpl() {}
 
     public static AppServiceImpl getInstance() {
@@ -32,7 +28,6 @@ public class AppServiceImpl implements AppService {
         return AppServiceImpl.atomicInteger;
     }
 
-
     public Thread getConnectedThread() {
         return connectedThread;
     }
@@ -41,27 +36,5 @@ public class AppServiceImpl implements AppService {
         this.connectedThread = connectedThread;
     }
 
-
-    public int getDeviceStatus() {
-        return deviceStatus;
-    }
-
-    public void setDeviceStatus(int deviceStatus) {
-        this.deviceStatus = deviceStatus;
-    }
-
-    @Override
-    public int getRealTimeStatus() {
-        return realTime;
-    }
-
-    public void setRealTimeStatus(int realTime) {
-        this.realTime = realTime;
-    }
-
-    private void errorExit(Context context, String title, String message){
-        Toast.makeText(context, title + " - " + message, Toast.LENGTH_LONG).show();
-        ((Activity)context).finish();
-    }
 
 }

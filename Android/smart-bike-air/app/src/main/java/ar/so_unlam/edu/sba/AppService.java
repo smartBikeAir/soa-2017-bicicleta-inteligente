@@ -14,12 +14,4 @@ public interface AppService {
 
     void setConnectedThread(Thread connectedThread);
 
-    int getDeviceStatus();
-
-    void setDeviceStatus(int deviceStatus);
-
-    int getRealTimeStatus();
-
-    void setRealTimeStatus(int realTimeSatus);
-
 }

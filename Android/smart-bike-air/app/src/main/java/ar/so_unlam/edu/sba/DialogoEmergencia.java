@@ -11,9 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-/**
- * Created by irmab on 14/11/2017.
- */
 
 public class DialogoEmergencia extends Activity {
 
@@ -32,7 +29,6 @@ public class DialogoEmergencia extends Activity {
             }
         });
     }
-
 
 
     public void llamadaTelefono() {

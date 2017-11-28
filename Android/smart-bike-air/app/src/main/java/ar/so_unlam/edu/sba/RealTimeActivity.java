@@ -118,12 +118,15 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
                 distanceTextView.setText(distance + " m");
             }
         });
+
         chronometer.start();
 
 
 
         // User location
         geolocationButton = (Button)findViewById(R.id.geolocationButton);
+
+
         geolocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +138,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
         // End trip
         endTripButton = (Button)findViewById(R.id.endTripButton);
+
         endTripButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,8 +206,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 
-            if(y > 7 || z > 7){
-                Log.d("RealTimeActivity", "GYROSCOPE: Lanzo Dialogo");
+            if(y > AppConstants.VALUE_MAX_GIROSCOPE_Y|| z > AppConstants.VALUE_MAX_GIROSCOPE_Z){
                 lanzarDialogoEmergencia();
             }
         }
