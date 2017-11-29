@@ -78,18 +78,18 @@ enum state {
 // Mensajes posibles entre Arduino y Android.
 enum message {
   unknown = 0,
-  startedTrip,
-  endedTrip,
-  activateAlarm,
-  deactivateAlarm,
-  turnAlarmOn,
-  turnAlarmOff,
-  velocity,
-  nearObject,
-  nearObjectEnabled, // Android habilitó la funcionalidad.
-  nearObjectDisabled, // Android deshabilitó la funcionalidad.
-  automaticLightEnabled, // Android habilitó la funcionalidad.
-  automaticLightDisabled // Android deshabilitó la funcionalidad.
+  startedTrip = 1,
+  endedTrip = 2,
+  activateAlarm = 3,
+  deactivateAlarm = 4,
+  turnAlarmOn = 5,
+  turnAlarmOff = 6,
+  velocity = 7,
+  nearObject = 8,
+  nearObjectEnabled = 9, // Android habilitó la funcionalidad.
+  nearObjectDisabled = 10, // Android deshabilitó la funcionalidad.
+  automaticLightEnabled = 11, // Android habilitó la funcionalidad.
+  automaticLightDisabled = 12 // Android deshabilitó la funcionalidad.
 };
 
 state systemState;
@@ -271,6 +271,7 @@ void execActivatedAlarm() {
     if (tilt.isTilted() == true || vel > MIN_VELOCITY_FOR_CHANGE_TO_ALARM_IS_RINGING_STATE) {
         // Hacemos sonar la alarma.
         rele.closeRele(); // Enciendo luz del chasis.
+        sendMessage(turnAlarmOn);
         systemState = alarmIsRinging;
         Serial.println("----- PASAMOS A MODO ALARMA SONANDO -----");
     } else if (resultado == ii) { // Si se hizo la combinación que desactiva la alarma.
@@ -295,7 +296,7 @@ void execAlarmIsRinging() {
     } else if (resultado == ii) { // Si se hizo la combinación que apaga la alarma.
         alarm->desactivarAlarmaSonando();
         rele.openRele(); // Apago luz del chasis.
-        sendMessage(turnAlarmOff);
+        sendMessage(deactivateAlarm);
         systemState = standBy;
         Serial.println("----- PASAMOS A MODO REPOSO -----");
     }
@@ -323,10 +324,13 @@ message receiveMessage() {
 }
 
 void sendMessage(message identifier) {
-     char message[20];     
-     itoa (identifier,message,10);
-     BT1.print(message);
+     //char message[20];     
+     //itoa (identifier,message,10);
+     BT1.print(identifier);
      BT1.print('\n');
+
+     Serial.print("Enviando ID = ");
+     Serial.println(identifier);
 }
 
 void sendVelocity(int value) {
