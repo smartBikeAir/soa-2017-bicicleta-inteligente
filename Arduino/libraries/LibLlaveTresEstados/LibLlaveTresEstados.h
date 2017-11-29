@@ -31,10 +31,12 @@ class LibLlaveTresEstados {
     // @return: me devuelve la última combinación detectada.
     // Podría ser ddd, ii o ninguna.
 		combinacion leerCombinacion();
-    
+
 	private:
 		int pinIzq;
 		int pinDer;
+    void reiniciarCombinacionDerecha();
+    void reiniciarCombinacionIzquierda();
 };
 
 #endif

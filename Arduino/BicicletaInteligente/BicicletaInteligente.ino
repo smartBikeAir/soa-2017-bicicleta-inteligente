@@ -304,7 +304,9 @@ void execAlarmIsRinging() {
 // Bluetooth
 message receiveMessage() {
    message value = unknown;
-   String message = "";
+
+   //TODO: Descomentar
+ /*  String message = "";
    
    if (BT1.available()) {
       Serial.println("Info BT disponible");
@@ -317,19 +319,21 @@ message receiveMessage() {
        int integerValue = atoi(message.c_str());   
        value = getMessageFromInteger(integerValue);
        return(value) ;
-    }
+    }*/
     return value;
 }
 
 void sendMessage(message identifier) {
-     BT1.print(identifier);
-     BT1.print('\n');
+  //TODO: Descomentar
+     //BT1.print(identifier);
+     //BT1.print('\n');
 }
 
 void sendVelocity(int value) {
-     value += 700; // Por convención para identificar a la velocidad, tomamos como base a 200.
-     BT1.print(value);
-     BT1.print('\n');
+    //TODO: Descomentar
+    // value += 700; // Por convención para identificar a la velocidad, tomamos como base a 700.
+    // BT1.print(value);
+    // BT1.print('\n');
 }
 
 message getMessageFromInteger(int value) {
@@ -351,7 +355,7 @@ message getMessageFromInteger(int value) {
        case 6:
           return turnAlarmOff;
        case 7:
-          return velocity; //TODO: Chequear si realmente lo necesitamos.
+          return velocity;
        case 8:
           return nearObject;
        case 9:
