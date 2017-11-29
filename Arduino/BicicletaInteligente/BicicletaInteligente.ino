@@ -54,6 +54,9 @@ int noLightTimeCounter = 0;
 // Cada vez que se envía un mensaje de objeto cercano, se actualiza esta variable.
 unsigned long nearObjectMessageTimestamp = 0;
 
+// Cada vez que se envía un mensaje de velocidad, se actualiza esta variable.
+unsigned long velocityMessageTimestamp = 0;
+
 #define END_CMD_CHAR '#' // Bluetooth: caracter de fin de mensaje.
 SoftwareSerial BT1(BLUETOOTH_RX, BLUETOOTH_TX);
 
@@ -247,6 +250,10 @@ void execTraveling() {
 
     // Sensado de velocidad.
     long velocityValue = Velocidad.medirVelocidad();
+
+    Serial.print("velocityValue = ");
+    Serial.println(velocityValue);
+
     sendVelocity(velocityValue); // Enviamos a Android la velocidad actual.
     if (velocityValue == 0) { // Si el usuario está quieto.
 
@@ -327,14 +334,10 @@ message receiveMessage() {
 }
 
 void sendMessage(message identifier) {
-     //char message[20];     
-     //itoa (identifier,message,10);
-
       BT1.print(identifier);
       BT1.print('\n');
-        Serial.print("Enviando ID = ");
-        Serial.println(identifier);
-    
+      Serial.print("Enviando ID = ");
+      Serial.println(identifier);
 }
 
 void sendNearObject() {
@@ -345,11 +348,17 @@ void sendNearObject() {
     } 
 }
 
-void sendVelocity(int value) {
-    //TODO: Descomentar
-    // value += 700; // Por convención para identificar a la velocidad, tomamos como base a 700.
-    // BT1.print(value);
-    // BT1.print('\r\n');
+void sendVelocity(long value) {
+     if ((millis() - velocityMessageTimestamp) > 1000) { // Deben pasar 1000 ms para poder enviar un nuevo msje.
+        
+         Serial.print("Enviando velocidad = ");
+         Serial.println(value);
+         velocityMessageTimestamp = millis();
+         BT1.print(velocity);
+         BT1.print('\n');
+         BT1.print(value);
+         BT1.print('\n');
+    } 
 }
 
 message getMessageFromInteger(int value) {
