@@ -88,11 +88,6 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
                                 }
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
-                                Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
-                                // Envío un Mensaje a la Arduino
-                                connectedThread.write("ok\n");
-
-
                             }
                         }
                 }
@@ -221,7 +216,6 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
         if (sensorEvent.sensor.getType() == Sensor.TYPE_GYROSCOPE){
 
-            float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 

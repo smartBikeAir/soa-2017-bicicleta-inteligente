@@ -13,6 +13,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
 import android.support.v4.content.LocalBroadcastManager;
@@ -25,6 +26,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
 
 
@@ -36,6 +39,9 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
     private Button settingsButton;
     private Sensor acceletometer;
     private SensorManager sensorManager;
+
+    private long acceletometerSensorTimestamp_inicial = 0;
+    private long acceletometerSensorTimestamp = 0;
 
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
 
@@ -66,8 +72,6 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
                                     Intent intent = new Intent("new-alarma-event");
                                     intent.putExtra("alarma", String.valueOf(AppConstants.ACTIVATE_ALARM) );
                                     LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
-
-
                                 }
                                 if(strIncom.equals(AppConstants.deactivateAlarm)){
 
@@ -82,11 +86,6 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
                                 }
 
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
-                                Toast.makeText(getBaseContext(), "MSG_ARDUINO-BOARD: " + strIncom, Toast.LENGTH_LONG).show();
-                                // Envío un Mensaje a la Arduino
-                                connectedThread.write("ok\n");
-
-
                             }
                         }
                 }
@@ -227,22 +226,39 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
 
         }
     };
+
+
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
 
-            float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 
-            if((z > AppConstants.VALUE_MAX_ACCELEROMETER_Z|| z < AppConstants.VALUE_MIN_ACCELEROMETER_Z)
-                    && !APP_SERVICE.getAlarmaStatus().equals(AppConstants.ACTIVATE_ALARM)){
+            Log.d("Arduino", "Y: "+y+"Z: "+z);
 
-                Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
-                startActivity(intent);
 
-                // envio msj arduino actualizando su modo a viaje
-                connectedThread.write(AppConstants.startedTrip+"\n");
+
+            if(    (z > AppConstants.VALUE_MAX_ACCELEROMETER_Z || z < AppConstants.VALUE_MIN_ACCELEROMETER_Z)
+                && (y > AppConstants.VALUE_MAX_ACCELEROMETER_Y || y < AppConstants.VALUE_MIN_ACCELEROMETER_Y)
+                && !APP_SERVICE.getAlarmaStatus().equals(AppConstants.ACTIVATE_ALARM) ){
+
+                    if(acceletometerSensorTimestamp_inicial <= 0){
+                        acceletometerSensorTimestamp_inicial = Calendar.getInstance().getTime().getTime();
+                    }else {
+                        acceletometerSensorTimestamp = Calendar.getInstance().getTime().getTime();
+                    }
+
+                    if(acceletometerSensorTimestamp - acceletometerSensorTimestamp_inicial > 3000) {
+
+                        Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
+                        startActivity(intent);
+
+                        // envio msj arduino actualizando su modo a viaje
+                        connectedThread.write(AppConstants.startedTrip + "\n");
+
+                        acceletometerSensorTimestamp_inicial = 0;
+                    }
             }
         }
     }
