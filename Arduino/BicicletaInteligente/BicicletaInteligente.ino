@@ -51,6 +51,9 @@ unsigned long velocityZeroTimestamp;
 int detectedLightTimeCounter = 0;
 int noLightTimeCounter = 0;
 
+// Cada vez que se envía un mensaje de objeto cercano, se actualiza esta variable.
+unsigned long nearObjectMessageTimestamp = 0;
+
 #define END_CMD_CHAR '#' // Bluetooth: caracter de fin de mensaje.
 SoftwareSerial BT1(BLUETOOTH_RX, BLUETOOTH_TX);
 
@@ -188,7 +191,7 @@ void execTraveling() {
         boolean nearObjectAlert = distanceToObject != UNDEFINED_DISTANCE && distanceToObject < MIN_DISTANCE_TO_OBJECT;
         if (nearObjectAlert == true) {
             alarm->activarAlarmaSonando(); // Utilizamos la alarma para avisar al usuario que tiene un objeto cercano.
-            sendMessage(nearObject); // Le avisamos a Android que tenemos un objeto cercano.
+            sendNearObject(); // Le avisamos a Android que tenemos un objeto cercano.
         } else {
             alarm->desactivarAlarmaSonando();
         }
@@ -318,7 +321,7 @@ message receiveMessage() {
        }
        int integerValue = atoi(message.c_str());   
        value = getMessageFromInteger(integerValue);
-       return(value) ;
+       return(value);
     }
     return value;
 }
@@ -326,11 +329,20 @@ message receiveMessage() {
 void sendMessage(message identifier) {
      //char message[20];     
      //itoa (identifier,message,10);
-     BT1.print(identifier);
-     BT1.print('\n');
 
-     Serial.print("Enviando ID = ");
-     Serial.println(identifier);
+      BT1.print(identifier);
+      BT1.print('\n');
+        Serial.print("Enviando ID = ");
+        Serial.println(identifier);
+    
+}
+
+void sendNearObject() {
+      if ((millis() - nearObjectMessageTimestamp) > 5000) { // Deben pasar 5000 ms para poder enviar un nuevo msje de objeto cercano.
+         nearObjectMessageTimestamp = millis();
+         BT1.print(nearObject);
+         BT1.print('\n');
+    } 
 }
 
 void sendVelocity(int value) {
