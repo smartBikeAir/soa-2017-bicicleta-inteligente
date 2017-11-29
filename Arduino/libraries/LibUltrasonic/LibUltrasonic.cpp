@@ -22,7 +22,7 @@ int LibUltrasonic::checkDistance() {
 
      // Guardo una marca de tiempo que me dice
      // cuándo "se comenzó a limpiar" el trigPin.
-     timestamp = micros(); //TODO: Ojo con que pasen los 70min de micros()...
+     timestamp = micros();
   }
 
   // Chequeamos si pasó el tiempo necesario para limpiar el TrigPin.
@@ -41,10 +41,16 @@ int LibUltrasonic::checkDistance() {
      if ((millis() - timestamp) >= TRIG_PIN_HIGH_STATE_DURATION) {
          digitalWrite(trigPin, LOW);
 
-         duration = pulseIn(echoPin, HIGH); // ojo con timeout. Puede devolver 0.
+         duration = pulseIn(echoPin, HIGH);
+
+         if (duration == 0) { // timeout. No se pudo determinar la duración.
+            shouldClearTrigPin = true;
+            shouldSetTrigPinHigh = true;
+            return UNDEFINED_DISTANCE;
+         }
 
          // Calculamos la distancia.
-         distance= duration * 0.034/2;
+         distance = duration * 0.034/2;
 
          // La "tarea ppal" terminó, resetteamos variables.
          shouldClearTrigPin = true;
