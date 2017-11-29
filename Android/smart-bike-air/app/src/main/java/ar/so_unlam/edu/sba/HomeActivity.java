@@ -232,15 +232,15 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
 
-            float y = sensorEvent.values[1];
+            float x = sensorEvent.values[0];
             float z = sensorEvent.values[2];
 
-            Log.d("Arduino", "Y: "+y+"Z: "+z);
+            Log.d("Arduino", "X: "+x+"Z: "+z);
 
 
 
             if(    (z > AppConstants.VALUE_MAX_ACCELEROMETER_Z || z < AppConstants.VALUE_MIN_ACCELEROMETER_Z)
-                && (y > AppConstants.VALUE_MAX_ACCELEROMETER_Y || y < AppConstants.VALUE_MIN_ACCELEROMETER_Y)
+                && (x > AppConstants.VALUE_MAX_ACCELEROMETER_X || x < AppConstants.VALUE_MIN_ACCELEROMETER_X)
                 && !APP_SERVICE.getAlarmaStatus().equals(AppConstants.ACTIVATE_ALARM) ){
 
                     if(acceletometerSensorTimestamp_inicial <= 0){
