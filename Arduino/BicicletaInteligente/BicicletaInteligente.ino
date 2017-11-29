@@ -326,14 +326,14 @@ message receiveMessage() {
 void sendMessage(message identifier) {
   //TODO: Descomentar
      //BT1.print(identifier);
-     //BT1.print('\n');
+     //BT1.print('\r\n');
 }
 
 void sendVelocity(int value) {
     //TODO: Descomentar
     // value += 700; // Por convención para identificar a la velocidad, tomamos como base a 700.
     // BT1.print(value);
-    // BT1.print('\n');
+    // BT1.print('\r\n');
 }
 
 message getMessageFromInteger(int value) {

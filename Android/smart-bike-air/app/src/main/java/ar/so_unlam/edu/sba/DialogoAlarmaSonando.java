@@ -33,7 +33,8 @@ public class DialogoAlarmaSonando extends Activity {
         offAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                connectedThread.write(AppConstants.turnAlarmOff+"\n");
+                String message = AppConstants.turnAlarmOff+AppConstants.END_CMD_CHAR;
+                connectedThread.write(message);
                 finish();
             }
         });

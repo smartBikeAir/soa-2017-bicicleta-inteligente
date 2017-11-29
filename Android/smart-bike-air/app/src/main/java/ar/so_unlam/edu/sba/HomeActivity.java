@@ -112,7 +112,8 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, RealTimeActivity.class);
                 startActivity(intent);
-                connectedThread.write(AppConstants.startedTrip+"\n");
+                String message = AppConstants.startedTrip + AppConstants.END_CMD_CHAR;
+                connectedThread.write(message);
             }
         });
 
@@ -131,6 +132,7 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
 
         if(APP_SERVICE.getAlarmaStatus().equals(AppConstants.DEACTIVATE_ALARM)){
             alarmaButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
+            startTripButton.setEnabled(true);
             startTripButton.setText("START");
             startTripButton.setTextColor(getApplication().getResources().getColor(R.color.colorPrimaryDark));
         } else{
@@ -147,14 +149,18 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
 
                 if(alarmaButton.getText().toString().equals(AppConstants.DEACTIVATE_ALARM)){
 
-                    connectedThread.write(AppConstants.activateAlarm+"\n");
+                    String message = AppConstants.activateAlarm + AppConstants.END_CMD_CHAR;
+                    connectedThread.write(message);
+
                     Intent intent = new Intent("new-alarma-event");
                     intent.putExtra("alarma", String.valueOf(AppConstants.ACTIVATE_ALARM) );
                     LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
 
                 }else{
 
-                    connectedThread.write(AppConstants.deactivateAlarm+"\n");
+                    String message = AppConstants.deactivateAlarm + AppConstants.END_CMD_CHAR;
+                    connectedThread.write(message);
+
                     Intent intent = new Intent("new-alarma-event");
                     intent.putExtra("alarma", String.valueOf(AppConstants.DEACTIVATE_ALARM) );
                     LocalBroadcastManager.getInstance(HomeActivity.this).sendBroadcast(intent);
@@ -255,7 +261,8 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
                         startActivity(intent);
 
                         // envio msj arduino actualizando su modo a viaje
-                        connectedThread.write(AppConstants.startedTrip + "\n");
+                        String message = AppConstants.startedTrip + AppConstants.END_CMD_CHAR;
+                        connectedThread.write(message);
 
                         acceletometerSensorTimestamp_inicial = 0;
                     }

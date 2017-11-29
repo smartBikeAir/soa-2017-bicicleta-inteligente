@@ -131,7 +131,8 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
         endTripButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                connectedThread.write(AppConstants.endedTrip+"\n");
+                String message = AppConstants.endedTrip+AppConstants.END_CMD_CHAR;
+                connectedThread.write(message);
                 finish();
             }
         });
