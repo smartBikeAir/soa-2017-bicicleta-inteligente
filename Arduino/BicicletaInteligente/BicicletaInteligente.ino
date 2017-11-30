@@ -51,6 +51,12 @@ unsigned long velocityZeroTimestamp;
 int detectedLightTimeCounter = 0;
 int noLightTimeCounter = 0;
 
+// Cada vez que se envía un mensaje de objeto cercano, se actualiza esta variable.
+unsigned long nearObjectMessageTimestamp = 0;
+
+// Cada vez que se envía un mensaje de velocidad, se actualiza esta variable.
+unsigned long velocityMessageTimestamp = 0;
+
 #define END_CMD_CHAR '#' // Bluetooth: caracter de fin de mensaje.
 SoftwareSerial BT1(BLUETOOTH_RX, BLUETOOTH_TX);
 
@@ -78,18 +84,18 @@ enum state {
 // Mensajes posibles entre Arduino y Android.
 enum message {
   unknown = 0,
-  startedTrip,
-  endedTrip,
-  activateAlarm,
-  deactivateAlarm,
-  turnAlarmOn,
-  turnAlarmOff,
-  velocity,
-  nearObject,
-  nearObjectEnabled, // Android habilitó la funcionalidad.
-  nearObjectDisabled, // Android deshabilitó la funcionalidad.
-  automaticLightEnabled, // Android habilitó la funcionalidad.
-  automaticLightDisabled // Android deshabilitó la funcionalidad.
+  startedTrip = 1,
+  endedTrip = 2,
+  activateAlarm = 3,
+  deactivateAlarm = 4,
+  turnAlarmOn = 5,
+  turnAlarmOff = 6,
+  velocity = 7,
+  nearObject = 8,
+  nearObjectEnabled = 9, // Android habilitó la funcionalidad.
+  nearObjectDisabled = 10, // Android deshabilitó la funcionalidad.
+  automaticLightEnabled = 11, // Android habilitó la funcionalidad.
+  automaticLightDisabled = 12 // Android deshabilitó la funcionalidad.
 };
 
 state systemState;
@@ -188,7 +194,7 @@ void execTraveling() {
         boolean nearObjectAlert = distanceToObject != UNDEFINED_DISTANCE && distanceToObject < MIN_DISTANCE_TO_OBJECT;
         if (nearObjectAlert == true) {
             alarm->activarAlarmaSonando(); // Utilizamos la alarma para avisar al usuario que tiene un objeto cercano.
-            sendMessage(nearObject); // Le avisamos a Android que tenemos un objeto cercano.
+            sendNearObject(); // Le avisamos a Android que tenemos un objeto cercano.
         } else {
             alarm->desactivarAlarmaSonando();
         }
@@ -244,6 +250,10 @@ void execTraveling() {
 
     // Sensado de velocidad.
     long velocityValue = Velocidad.medirVelocidad();
+
+    Serial.print("velocityValue = ");
+    Serial.println(velocityValue);
+
     sendVelocity(velocityValue); // Enviamos a Android la velocidad actual.
     if (velocityValue == 0) { // Si el usuario está quieto.
 
@@ -271,6 +281,7 @@ void execActivatedAlarm() {
     if (tilt.isTilted() == true || vel > MIN_VELOCITY_FOR_CHANGE_TO_ALARM_IS_RINGING_STATE) {
         // Hacemos sonar la alarma.
         rele.closeRele(); // Enciendo luz del chasis.
+        sendMessage(turnAlarmOn);
         systemState = alarmIsRinging;
         Serial.println("----- PASAMOS A MODO ALARMA SONANDO -----");
     } else if (resultado == ii) { // Si se hizo la combinación que desactiva la alarma.
@@ -295,7 +306,7 @@ void execAlarmIsRinging() {
     } else if (resultado == ii) { // Si se hizo la combinación que apaga la alarma.
         alarm->desactivarAlarmaSonando();
         rele.openRele(); // Apago luz del chasis.
-        sendMessage(turnAlarmOff);
+        sendMessage(deactivateAlarm);
         systemState = standBy;
         Serial.println("----- PASAMOS A MODO REPOSO -----");
     }
@@ -317,23 +328,37 @@ message receiveMessage() {
        }
        int integerValue = atoi(message.c_str());   
        value = getMessageFromInteger(integerValue);
-       return(value) ;
+       return(value);
     }
     return value;
 }
 
 void sendMessage(message identifier) {
-     char message[20];     
-     itoa (identifier,message,10);
-     BT1.print(message);
-     BT1.print('\n');
+      BT1.print(identifier);
+      BT1.print('\n');
+      Serial.print("Enviando ID = ");
+      Serial.println(identifier);
 }
 
-void sendVelocity(int value) {
-    //TODO: Descomentar
-    // value += 700; // Por convención para identificar a la velocidad, tomamos como base a 700.
-    // BT1.print(value);
-    // BT1.print('\r\n');
+void sendNearObject() {
+      if ((millis() - nearObjectMessageTimestamp) > 5000) { // Deben pasar 5000 ms para poder enviar un nuevo msje de objeto cercano.
+         nearObjectMessageTimestamp = millis();
+         BT1.print(nearObject);
+         BT1.print('\n');
+    } 
+}
+
+void sendVelocity(long value) {
+     if ((millis() - velocityMessageTimestamp) > 1000) { // Deben pasar 1000 ms para poder enviar un nuevo msje.
+        
+         Serial.print("Enviando velocidad = ");
+         Serial.println(value);
+         velocityMessageTimestamp = millis();
+         BT1.print(velocity);
+         BT1.print('\n');
+         BT1.print(value);
+         BT1.print('\n');
+    } 
 }
 
 message getMessageFromInteger(int value) {

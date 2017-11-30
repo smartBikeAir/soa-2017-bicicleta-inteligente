@@ -32,7 +32,7 @@ unsigned long  LibVelocidad::medirVelocidad(){
 
 	// Time since last read
 	  timeSinceLastRead = millis() - currentTime;
-	  uVelocidad = 0;
+
 	  // Read
 	  currentTime = millis();
 	  currentValue = digitalRead(iPin);
