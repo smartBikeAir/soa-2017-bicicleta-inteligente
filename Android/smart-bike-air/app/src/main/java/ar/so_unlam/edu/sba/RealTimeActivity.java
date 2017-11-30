@@ -49,8 +49,7 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
     private long timestampLastVelocity;
     private double travelledDistance = 0.0;
 
-    private int velocityAvg = 0; // m/s
-    private int velocityCount = 0;
+    boolean MSJ_VELOCIDAD = false;
 
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -67,24 +66,30 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
 
                             if (!strIncom.isEmpty()) {
 
-                                if(strIncom.equals(AppConstants.nearObject)) {
+                                if(strIncom.equals(AppConstants.nearObject)&&!MSJ_VELOCIDAD) {
 
                                     Toast.makeText(getBaseContext(), "OBJETO CERCANOOOO!!!!!!!!!!!!!: ", Toast.LENGTH_LONG).show();
                                     // Envío un Mensaje a la Arduino
                                 }
-                                if(strIncom.equals(AppConstants.endedTrip)) {
+                                if(strIncom.equals(AppConstants.endedTrip)&&!MSJ_VELOCIDAD) {
 
                                     Toast.makeText(getBaseContext(), "-------FIN VIAJE ------", Toast.LENGTH_LONG).show();
                                     finish();
                                 }
-                                if(Integer.valueOf(strIncom)>= AppConstants.VALUE_MSJ_VELOCITY){
+                                if(strIncom.equals(AppConstants.velocity)&&!MSJ_VELOCIDAD){
 
-                                    int velocidad = Integer.valueOf(strIncom) - AppConstants.VALUE_MSJ_VELOCITY;
+                                    MSJ_VELOCIDAD = true;
+
+                                }
+                                if(MSJ_VELOCIDAD && !strIncom.equals(AppConstants.velocity) ){
+
+                                    int velocidad = Integer.valueOf(strIncom);
 
                                     Intent intent = new Intent("new-velocity-event");
                                     intent.putExtra("velocity", String.valueOf(velocidad) );
                                     LocalBroadcastManager.getInstance(RealTimeActivity.this).sendBroadcast(intent);
 
+                                    MSJ_VELOCIDAD = false;
                                 }
                                 Log.d("ArduinoCon_BT", "MSG_ARDUINO-BOARD: " + strIncom);
                             }
