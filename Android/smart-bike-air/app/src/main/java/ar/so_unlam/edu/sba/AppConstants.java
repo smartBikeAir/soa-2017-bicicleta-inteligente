@@ -26,11 +26,14 @@ public class AppConstants {
 
     public static final int VALUE_MIN_ACCELEROMETER_X = -9;
 
+    
     //MARCA FIN DE MENSAJE, SE ESTABLECE "#" COMO MARCA DE FIN DE MENSAJE QUE ESPERA ARDUINO
-
+    
     public static final String END_CMD_CHAR = "#";
+    
+    
     // VALOR PARA SEPARACION MENSAJES DE VELOCIDAD
-
+    
     public static final int VALUE_MSJ_VELOCITY = 700;
 
 
