@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
                         byte[] readBuf = (byte[]) msg.obj;
                         arrayMsg = new String(readBuf, 0, msg.arg1).split("\r\n"); // create string from bytes array, and split msgs
                         for (int i = 0; i < arrayMsg.length; i++) {
-                            strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
+                            strIncom = arrayMsg[i].replaceAll("\r", "").replaceAll("\n", "");
                             if (!strIncom.isEmpty()) {
 
                                 if(strIncom.equals(AppConstants.startedTrip)) {

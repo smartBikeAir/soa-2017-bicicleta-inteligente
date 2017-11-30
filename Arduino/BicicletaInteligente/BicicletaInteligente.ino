@@ -305,8 +305,7 @@ void execAlarmIsRinging() {
 message receiveMessage() {
    message value = unknown;
 
-   //TODO: Descomentar
- /*  String message = "";
+    String message = "";
    
    if (BT1.available()) {
       Serial.println("Info BT disponible");
@@ -319,14 +318,15 @@ message receiveMessage() {
        int integerValue = atoi(message.c_str());   
        value = getMessageFromInteger(integerValue);
        return(value) ;
-    }*/
+    }
     return value;
 }
 
 void sendMessage(message identifier) {
-  //TODO: Descomentar
-     //BT1.print(identifier);
-     //BT1.print('\r\n');
+     char message[20];     
+     itoa (identifier,message,10);
+     BT1.print(message);
+     BT1.print('\n');
 }
 
 void sendVelocity(int value) {

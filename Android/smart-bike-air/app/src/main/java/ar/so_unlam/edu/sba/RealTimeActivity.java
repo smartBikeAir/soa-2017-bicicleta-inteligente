@@ -62,10 +62,9 @@ public class RealTimeActivity extends AppCompatActivity  implements SensorEventL
                     case RECIEVE_MESSAGE: // if receive massage
                         byte[] readBuf = (byte[]) msg.obj;
                         arrayMsg = new String(readBuf, 0, msg.arg1).split("\r\n"); // create string from bytes array, and split msgs
-                        Log.d("receivedMessage", "arrayMsg " + arrayMsg[0]);
                         for (int i = 0; i < arrayMsg.length; i++) {
-                            strIncom = arrayMsg[i].replaceAll("\n", "").replaceAll("\r", "");
-                            Log.d("receivedMessage", "strIncom " + strIncom);
+                            strIncom = arrayMsg[i].replaceAll("\r", "").replaceAll("\n", "");
+
                             if (!strIncom.isEmpty()) {
 
                                 if(strIncom.equals(AppConstants.nearObject)) {

@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static ar.so_unlam.edu.sba.AppConstants.RECIEVE_MESSAGE;
 
 public class MainActivity extends AppCompatActivity {
 

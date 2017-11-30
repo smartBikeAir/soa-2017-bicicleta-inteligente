@@ -22,7 +22,6 @@ public class ConnectedThread extends Thread {
     private Handler handler;
 
     private AtomicInteger atomicInteger;
-    private static final Integer MAX_READERS = 10;
     private static final AppService APP_SERVICE = AppServiceImpl.getInstance();
 
     public ConnectedThread(BluetoothSocket socket) {
