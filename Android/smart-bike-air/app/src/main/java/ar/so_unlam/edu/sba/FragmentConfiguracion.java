@@ -37,13 +37,13 @@ public class FragmentConfiguracion extends PreferenceFragment implements SharedP
         {
               if(preferenceManager.getSharedPreferences().getBoolean(KEY_PREF_LUCES,true)){
 
-                  String message =  AppConstants.automaticLightDisabled+AppConstants.END_CMD_CHAR;
+                  String message =  AppConstants.automaticLightEnabled+AppConstants.END_CMD_CHAR;
                   connectedThread.write(message);
                   preferenceManager.findPreference(KEY_PREF_LUCES).setDefaultValue(false);
 
               }else {
 
-                  String message =  AppConstants.automaticLightEnabled+AppConstants.END_CMD_CHAR;
+                  String message =  AppConstants.automaticLightDisabled+AppConstants.END_CMD_CHAR;
                   connectedThread.write(message);
                   preferenceManager.findPreference(KEY_PREF_LUCES).setDefaultValue(true);
 
@@ -55,12 +55,12 @@ public class FragmentConfiguracion extends PreferenceFragment implements SharedP
         {
             if(preferenceManager.getSharedPreferences().getBoolean(KEY_PREF_PROXIMIDAD,true)){
 
-                String message =  AppConstants.nearObjectDisabled+AppConstants.END_CMD_CHAR;
+                String message =  AppConstants.nearObjectEnabled+AppConstants.END_CMD_CHAR;
                 connectedThread.write(message);
                 preferenceManager.findPreference(KEY_PREF_PROXIMIDAD).setDefaultValue(false);
 
             }else {
-                String message =  AppConstants.nearObjectEnabled+AppConstants.END_CMD_CHAR;
+                String message =  AppConstants.nearObjectDisabled+AppConstants.END_CMD_CHAR;
                 connectedThread.write(message);
                 preferenceManager.findPreference(KEY_PREF_PROXIMIDAD).setDefaultValue(true);
 

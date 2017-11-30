@@ -241,9 +241,6 @@ public class HomeActivity extends AppCompatActivity implements SensorEventListen
             float x = sensorEvent.values[0];
             float z = sensorEvent.values[2];
 
-            Log.d("Arduino", "X: "+x+"Z: "+z);
-
-
 
             if(    (z > AppConstants.VALUE_MAX_ACCELEROMETER_Z || z < AppConstants.VALUE_MIN_ACCELEROMETER_Z)
                 && (x > AppConstants.VALUE_MAX_ACCELEROMETER_X || x < AppConstants.VALUE_MIN_ACCELEROMETER_X)

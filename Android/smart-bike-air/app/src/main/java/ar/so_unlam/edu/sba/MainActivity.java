@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "ArduinoCon_BT";
