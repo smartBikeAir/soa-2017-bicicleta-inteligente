@@ -1,13 +1,10 @@
 package ar.so_unlam.edu.sba;
 
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-
-
 
 public class FragmentConfiguracion extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -23,16 +20,13 @@ public class FragmentConfiguracion extends PreferenceFragment implements SharedP
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         addPreferencesFromResource(R.xml.activity_preferences);
     }
 
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
         PreferenceManager preferenceManager = getPreferenceManager();
-
         if (key.equals(KEY_PREF_LUCES))
         {
               if(preferenceManager.getSharedPreferences().getBoolean(KEY_PREF_LUCES,true)){
@@ -50,7 +44,6 @@ public class FragmentConfiguracion extends PreferenceFragment implements SharedP
               }
           }
 
-
         if (key.equals(KEY_PREF_PROXIMIDAD))
         {
             if(preferenceManager.getSharedPreferences().getBoolean(KEY_PREF_PROXIMIDAD,true)){
@@ -65,7 +58,6 @@ public class FragmentConfiguracion extends PreferenceFragment implements SharedP
                 preferenceManager.findPreference(KEY_PREF_PROXIMIDAD).setDefaultValue(true);
 
             }
-
         }
     }
 
@@ -74,7 +66,6 @@ public class FragmentConfiguracion extends PreferenceFragment implements SharedP
         super.onResume();
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         connectedThread.setHandler(handler);
-
     }
 
     @Override
@@ -82,8 +73,5 @@ public class FragmentConfiguracion extends PreferenceFragment implements SharedP
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
-
-
-
 
 }
