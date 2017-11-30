@@ -36,7 +36,6 @@ public class ConnectedThread extends Thread {
 
         inputStream = tmpIn;
         outputStream = tmpOut;
-
         atomicInteger = APP_SERVICE.getAtomicInteger();
     }
 
@@ -52,27 +51,14 @@ public class ConnectedThread extends Thread {
 
                 // Send to message queue Handler
                 handler.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();
-                /* synchronized (atomicInteger) {
-                    while (atomicInteger.get() == MAX_READERS) {
-                        atomicInteger.wait();
-                    }
-                    handler.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();
-                    atomicInteger.notifyAll();
-                    atomicInteger.incrementAndGet();
-                } */
+   
             } catch (IOException e) {
                 String error = e.getMessage();
                 byte[] errorBytes = error.getBytes();
                 // Send to message queue Handler
                 handler.obtainMessage(RECIEVE_MESSAGE, errorBytes.length, -1, errorBytes).sendToTarget();
                 break;
-            } /* catch (InterruptedException e) {
-                String error = e.getMessage();
-                byte[] errorBytes = error.getBytes();
-                // Send to message queue Handler
-                handler.obtainMessage(RECIEVE_MESSAGE, errorBytes.length, -1, errorBytes).sendToTarget();
-                break;
-            } */
+            }
 
         }
     }
