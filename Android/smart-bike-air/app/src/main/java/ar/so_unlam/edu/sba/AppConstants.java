@@ -6,6 +6,9 @@ package ar.so_unlam.edu.sba;
 
 public class AppConstants {
 
+    // Tiempo mínimo que debe transcurrir entre la detección de un objeto cercano y el siguiente.
+    public static final int  MIN_TIME_FOR_NEAR_OBJECT = 1500; // Expresado en ms.
+
     // Status for Handler
     public static final int RECIEVE_MESSAGE = 1;
 
@@ -65,5 +68,6 @@ public class AppConstants {
     public static final String     automaticLightEnabled = "11" ; // Android habilitó la funcionalidad.
 
     public static final String     automaticLightDisabled = "12";// Android deshabilitó la funcionalidadd
+
 
 }

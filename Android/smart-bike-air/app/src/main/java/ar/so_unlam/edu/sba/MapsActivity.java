@@ -113,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 que tenemos un objeto cercano.
              */
             long differenceBetweenDates = Calendar.getInstance().getTime().getTime() - proximitySensorTimestamp;
-            if (x < proximity.getMaximumRange() && differenceBetweenDates > 1500) {
+            if (x < proximity.getMaximumRange() && differenceBetweenDates > AppConstants.MIN_TIME_FOR_NEAR_OBJECT) {
 
                 // Guardamos marca de tiempo asociada a la última vez que el sensor
                 // detectó objeto cercano. Es necesario que pasen 1500 ms desde la última
