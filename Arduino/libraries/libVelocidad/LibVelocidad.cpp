@@ -44,18 +44,7 @@ unsigned long  LibVelocidad::medirVelocidad(){
 
 	  // Reset RPM counter (after 2 second)
 	  if(currentTime - lastResetTime > RESET_TIME) {
-		/*Serial.println("==== RESET ====");
-		Serial.print("Vueltas: ");
-		Serial.println(revolutions);
-
-		Serial.print("RPM: ");*/
 		currentRPM = (float)(revolutions*MINUTOS)/2;
-		//Serial.println(currentRPM);
-
-
-
-		/*Serial.print("Velocidad: ");
-		Serial.println(MEDIDA_RADIO*currentRPM*AJUSTE_UNIDADES);*/
 		uVelocidad = MEDIDA_RADIO*currentRPM*AJUSTE_UNIDADES;
 
 		currentTime = 0;
